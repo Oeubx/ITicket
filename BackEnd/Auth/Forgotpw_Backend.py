@@ -5,10 +5,9 @@ import customtkinter as ctk
 import bcrypt #to read passwords
 
 from Assets.GradientBg import create_gradient_frame
-from BackEnd.SQLite_Calls import SQLiteCall, get_dbConn
 
-_, pointer = SQLiteCall()
-db = get_dbConn()
+# accesses the queries necessary
+from BackEnd.SQLiteQueries.AuthQueries import fetch_user_credentials_by_email, update_user_password_by_email
 
 def show_TopLevelMessage(message):
     toplevelFrame = ctk.CTkToplevel()
@@ -60,18 +59,8 @@ def forgotPassFunct(email_entry, password_entry):
         show_TopLevelMessage("Password field is empty!")
         return False
 
-    # query db for matching email
-    pointer.execute("""
-                    SELECT
-                        emp_email, emp_password
-                    FROM Employee
-                    WHERE emp_email = ?
-                    """,
-                    (email_entry.get().strip(),)
-                    )
-    # email_pass[0] to access the email
-    # email_pass[1] to access the password
-    email_pass = pointer.fetchone()
+    #receives it while passing necessary widgets
+    email_pass = fetch_user_credentials_by_email(email_entry)
 
     # returns None if there's no matching email in DB
     if email_pass is None:
@@ -88,14 +77,17 @@ def forgotPassFunct(email_entry, password_entry):
     else:
         # hash the new password and update it in DB
         hashed_password = hidePw(password_entry.get().strip())
-        pointer.execute("UPDATE Employee SET emp_password = ? WHERE emp_email = ?",
-                        (hashed_password, email_pass[0])
-                        )
-        get_dbConn().commit()
+        #receives it while passing necessary widgets
+        pwUpdate_success = update_user_password_by_email(hashed_password, email_pass[0])
 
     # password update success
-    show_TopLevelMessage("Password successfully updated!")
-    return True
+    if pwUpdate_success :
+        show_TopLevelMessage("Password successfully updated!")
+        return True
+    else :
+        # password update success
+        show_TopLevelMessage("Error updating password!")
+        return False
 
 # --------------------------------------------------------- #
 def get_showPassIcon():

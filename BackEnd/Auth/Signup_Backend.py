@@ -6,10 +6,9 @@ import bcrypt # to read passwords
 import re # for email format
 
 from Assets.GradientBg import create_gradient_frame
-from BackEnd.SQLite_Calls import SQLiteCall, get_dbConn
 
-_, pointer = SQLiteCall()
-db = get_dbConn()
+# accesses the queries necessary
+from BackEnd.SQLiteQueries.AuthQueries import check_emailDuplicates_by_email, sign_user_credentials
 
 def show_TopLevelMessage(message):
     toplevelFrame = ctk.CTkToplevel()
@@ -81,31 +80,22 @@ def signUpFunct(username_entry, password_entry, email_entry, emp_type_holder):
         return False
     
     # Check for duplicate email
-    pointer.execute("SELECT emp_email FROM Employee WHERE emp_email = ?", (email,))
-    if pointer.fetchone() is not None:
+    emailDuplicates_checker = check_emailDuplicates_by_email(email)
+    #returns None if theres no duplicate and ignores this
+    if emailDuplicates_checker is not None:
         show_TopLevelMessage("Email already exists!")
         return False
     
     # hashes the password
     hashed_password = hidePw(pw)
 
-    # Proceed with sign-up
-    signUpQuery = """
-                    INSERT INTO Employee 
-                        (
-                        emp_username,
-                        emp_email,
-                        emp_password, 
-                        emp_type
-                        )
-                    VALUES (?, ?, ?, ?)
-                    """
-    pointer.execute(signUpQuery, (user, email, hashed_password, emp_type))
-    dbConn = get_dbConn()
-    dbConn.commit()
-
-    show_TopLevelMessage("Account successfully created!")
-    return True
+    signUp_success = sign_user_credentials(user, email, hashed_password, emp_type)
+    if signUp_success :
+        show_TopLevelMessage("Account successfully created!")
+        return True
+    else :
+        show_TopLevelMessage("Account creation error!")
+        return False
 
 # --------------------------------------------------------- #
 def get_showPassIcon():

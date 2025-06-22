@@ -5,10 +5,11 @@ import customtkinter as ctk
 import bcrypt #to read passwords
 
 from Assets.GradientBg import create_gradient_frame
-from BackEnd.SQLite_Calls import SQLiteCall
+
 from BackEnd.Auth.LoggedIn_Acc import loginUpdateFile
 
-_, pointer = SQLiteCall()
+# accesses the queries necessary
+from BackEnd.SQLiteQueries.AuthQueries import fetch_all_login_credentials
 
 def show_TopLevelMessage(message):
     #login error pop up widget
@@ -36,15 +37,13 @@ def show_TopLevelMessage(message):
     CloseBtn.pack(side="top", pady=25)
 
 def loginFunct(email_entry, password_entry):
-    pointer.execute("""
-                    SELECT
-                        emp_Id,
-                        emp_email,
-                        emp_password
-                    FROM Employee
-                    """
-                    )
-    userContentsHolder = pointer.fetchall()
+    #receives it
+    userContentsHolder = fetch_all_login_credentials()
+
+    # simpler and shorter method of check validation
+    if not userContentsHolder:
+        show_TopLevelMessage("No user data found.")
+        return False
 
     #is true if its empty
     userEntry_IsEmpty = email_entry.get().strip() == ""
