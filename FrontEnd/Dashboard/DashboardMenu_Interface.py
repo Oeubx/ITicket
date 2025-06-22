@@ -12,56 +12,50 @@ def get_profileIcon():
     profile_icon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))  # adjust size as needed
     return profile_icon
 
-def load_dashboardMenu(menuFrame, menuIconBtn, toggle_callback):
-    #collection of icons
-    profile_icon = get_profileIcon()
+def load_dashboardMenu(
+        menuFrame, menuIconBtn,
+        toggle_callback
+    ):
+    
+    if hasattr(menuFrame, "loaded") and menuFrame.loaded:
+        return  # Already built
 
-    # Prevent double creation
-    if getattr(menuFrame, "loaded", False):
-        return
+    icon = get_profileIcon()
 
-    #m = menu
     mHome = ctk.CTkButton(
         menuFrame,
         text="Home",
-        image=profile_icon,
+        image=icon,
         compound="left",
         command=toggle_callback
     )
-    mHome.pack(side="top")
+    mHome.pack(side="top", pady=(25, 0))
 
-    #employee frame
     employeesFrame = ctk.CTkFrame(menuFrame)
     employeesFrame.pack(padx=15, pady=15)
 
-    #contents of employees Frame
-    #missing command func
     employeeDropdown = ctk.CTkOptionMenu(
         employeesFrame,
         values=["All Employees", "IT employees", "Employees"]
     )
     employeeDropdown.pack(side="left", anchor="n", pady=20)
 
-    #missing refresh function
-    #get value from dropdown and show employees within that value
     employee_RefreshIcon = ctk.CTkLabel(
         employeesFrame,
         text="",
-        image=profile_icon  #temp icon
+        image=icon
     )
     employee_RefreshIcon.pack(side="left", anchor="n")
 
-    #contents of subframe ##where the contents of the dropdown goes
     employees_SubFrame = ctk.CTkFrame(employeesFrame, fg_color="green")
     employees_SubFrame.pack(side="bottom", padx=15, pady=15)
 
-    #missing command function to be redirected to tickets
     mTickets = ctk.CTkButton(
         menuFrame,
         text="Tickets",
-        image=profile_icon, #temp icon
-        compound="left"  # image on the left, text on the right
+        image=icon,
+        compound="left"
     )
     mTickets.pack(side="top")
 
-    menuFrame.loaded = True
+    menuFrame.loaded = True  # Mark as initialized

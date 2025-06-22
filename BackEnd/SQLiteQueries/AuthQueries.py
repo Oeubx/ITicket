@@ -5,7 +5,7 @@ from BackEnd.SQLiteQueries.GeneralQueries import SQLiteCall
 dbConn, pointer = SQLiteCall()
 
 # --------------------------------------------------------- #
-#queries for login | Login_Backend.py
+# queries for login | Login_Backend.py
 # --------------------------------------------------------- #
 def fetch_all_login_credentials():
     pointer.execute("""
@@ -21,7 +21,7 @@ def fetch_all_login_credentials():
     return userContentsHolder
 
 # --------------------------------------------------------- #
-#queries for forgot password | Forgotpw_Backend.py
+# queries for forgot password | Forgotpw_Backend.py
 # --------------------------------------------------------- #
 def fetch_user_credentials_by_email(email_entry):
     query = "SELECT emp_email, emp_password FROM Employee WHERE emp_email = ?"
@@ -47,7 +47,7 @@ def update_user_password_by_email(hashed_password, email):
         return False
 
 # --------------------------------------------------------- #
-#queries for sign up | Signup_Backend.py
+# queries for sign up | Signup_Backend.py
 # --------------------------------------------------------- #
 def check_emailDuplicates_by_email(email):
     pointer.execute("SELECT emp_email FROM Employee WHERE emp_email = ?", (email, ) )

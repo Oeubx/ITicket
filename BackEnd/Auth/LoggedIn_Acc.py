@@ -38,6 +38,10 @@ def logoutUpdateFile():
     with open(filePointer, "w") as file:
         file.write("0\n") #passes 0 automatically to direct user auth process
 
+# --------------------------------------------------------- #
+# DEL EVERYTHING BELOW HERE
+# --------------------------------------------------------- #
+
 def getUserDetails(): #read from database by reading logged in details on file
     #reads on file and automatically closes the file after
     with open(filePointer, "r") as file:

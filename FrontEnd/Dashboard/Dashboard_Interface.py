@@ -6,6 +6,7 @@ import customtkinter as ctk
 from PIL import Image
 
 #module imports
+from Assets.GradientBg import create_gradient_frame
 from FrontEnd.Tickets.Tickets_Interface import load_ticketsInterface
 from BackEnd.Dashboard.Dashboard_Backend import show_menu, show_ProfileMenu
 
@@ -32,61 +33,73 @@ def get_profileIcon():
 ###########################################################################
 #main
 def load_dashboard(container, authValue, auth_callback):
-    #collection of icons
     menuIcon = get_menuIcon()
     profileIcon = get_profileIcon()
 
-    #menu frame
-    menuFrame = ctk.CTkFrame(container)
-    menuFrame.pack(side="left", fill="y")
-    menuFrame.pack_forget()
+    dashboardMainFrame = ctk.CTkFrame(container)
+    dashboardMainFrame.pack(side="top", fill="both", expand=True)
 
-    #contents of menu frame
-    menuIconBtn = ctk.CTkButton(container)
+    dashboardBg = create_gradient_frame(dashboardMainFrame)
+    dashboardBg.pack(fill="both", expand=True)
 
-    #frame for whatever the contents is
-    dContentsFrame = ctk.CTkFrame(
-        container,
-        fg_color="#ffffff"
-        )
-    load_ticketsInterface(dContentsFrame)
-    dContentsFrame.pack()
-    dContentsFrame.pack_forget()
+    # Left frame (menu)
+    leftFrame = ctk.CTkFrame(dashboardBg)
+    leftFrame.pack_forget()  # Initially hidden
 
-    #mini profile frame
-    profileFrame = ctk.CTkFrame(container)
-    profileFrame.pack(side="left", fill="y")
-    profileFrame.pack_forget()
+    # Center frame (main contents)
+    centerFrame = ctk.CTkFrame(dashboardBg)
+    centerBg = create_gradient_frame(centerFrame)
+    centerBg.pack(fill="both", expand=True)
+    centerFrame.pack(side="left", fill="both", expand=True)
 
-    #contents of profile frame
-    profileIconBtn = ctk.CTkButton(container)
+    # Right frame (profile)
+    rightFrame = ctk.CTkFrame(dashboardBg)
+    rightFrame.pack_forget()  # Initially hidden
 
-    #configuring the contents
+    # Header bar
+    headerFrame = ctk.CTkFrame(centerBg)
+    headerFrame.pack(side="top", fill="x")
+
+    headerBg = create_gradient_frame(headerFrame)
+    headerBg.pack(fill="both", expand=True)
+
+    # Header buttons
+    menuIconBtn = ctk.CTkButton(headerBg)
+    profileIconBtn = ctk.CTkButton(headerBg)
+
     menuIconBtn.configure(
-        text="", 
+        text="",
         image=menuIcon,
-        width=40, 
-        height=40,
+        width=40, height=40,
         fg_color="transparent",
         hover_color="#000000",
-        command=lambda: show_menu(menuFrame, menuIconBtn,
-                                  dContentsFrame,
-                                  profileFrame, profileIconBtn)
+        command=lambda: show_menu(leftFrame, menuIconBtn,
+                                  centerFrame,
+                                  rightFrame, profileIconBtn)
     )
-    
     profileIconBtn.configure(
-        text="", 
+        text="",
         image=profileIcon,
-        width=40, 
-        height=40,
+        width=40, height=40,
         fg_color="transparent",
         hover_color="#000000",
-        command=lambda: show_ProfileMenu(
-            profileFrame, profileIconBtn, auth_callback, container
-            )
+        command=lambda: show_ProfileMenu(leftFrame, menuIconBtn,
+                                        centerFrame,
+                                        rightFrame, profileIconBtn,
+                                        auth_callback, container,
+                                        dashboardMainFrame
+                                        )
     )
-    
-    #printing the three
+
     menuIconBtn.pack(side="left", anchor="nw", pady=25, padx=25)
-    dContentsFrame.pack(side="left", fill="both", expand=True, pady=25, padx=25)
-    profileIconBtn.pack(side="left", anchor="ne", pady=25, padx=25)
+    profileIconBtn.pack(side="right", anchor="ne", pady=25, padx=25)
+
+    # Main content frame
+    contentFrame = ctk.CTkFrame(centerBg)
+    contentFrame.pack(side="top", fill="both", expand=True)
+
+    contentBg = create_gradient_frame(contentFrame)
+    contentBg.pack(fill="both", expand=True)
+
+    dContentsFrame = ctk.CTkFrame(contentBg, fg_color="#ffffff")
+    dContentsFrame.pack(fill="both", expand=True, padx=25, pady=25)

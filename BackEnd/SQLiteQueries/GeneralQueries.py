@@ -1,8 +1,6 @@
 
 #general queries.py
 
-#sqlite calls file
-
 import sqlite3 as sql
 import bcrypt
 from datetime import datetime   #for date n time
@@ -27,6 +25,8 @@ def get_dbConn():
 
 def get_pointer():
     return SQLiteCall()[1]  # get db pointer
+# --------------------------------------------------------- #
+
 
 def hidePw(plain_password):
     # bcrypt requires bytes, so encode the string
