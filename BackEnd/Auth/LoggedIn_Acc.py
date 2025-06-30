@@ -59,7 +59,8 @@ def getUserID():
 
     emp_Id = lines[1].strip() #gets the first index (2nd item which is emp_Id)
 
-    getLogged_acc_details = "SELECT * FROM Employee WHERE emp_Id = ?"
+    #getLogged_acc_details = "SELECT * FROM Employee WHERE emp_Id = ?"
+    getLogged_acc_details = "SELECT emp_Id FROM Employee WHERE emp_Id = ?"
 
     pointer.execute(getLogged_acc_details, (emp_Id,))
     acc_details = pointer.fetchone()
