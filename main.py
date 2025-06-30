@@ -32,6 +32,5 @@ load_auth(shared_frame, authValue, previous_frame=None)
 
 #tests
 
-#end lul
 ITicket.mainloop()
 #
