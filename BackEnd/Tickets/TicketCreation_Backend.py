@@ -1,7 +1,7 @@
 
 import customtkinter as ctk
 
-from BackEnd.Auth.LoggedIn_Acc import getUserID
+#from BackEnd.Auth.LoggedIn_Acc import getUserID
 
 from BackEnd.SQLite_Calls import SQLiteCall
 dbConn, pointer = SQLiteCall()
@@ -57,7 +57,8 @@ def submitTicket( #passes the widgets and .gets their values
         finalDescription = f"{selected_problem_var.get()}\n\n{descriptionEntry.get().strip()}"
 
         #access index1 to get logged user's username
-        submitterId = getUserID()
+        #submitterId = getUserID()
+        submitterId = "2"
 
         #sqlite query
         ticketInserter = """

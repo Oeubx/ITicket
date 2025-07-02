@@ -1,7 +1,7 @@
 
 import customtkinter as ctk
 
-from BackEnd.Auth.LoggedIn_Acc import getUserDetails
+#from BackEnd.SQLiteQueries.LoggedInAcc_Queries import fetch_all_user_credentials
 from BackEnd.Tickets.TicketCreation_Backend import update_problems, submitTicket
 
 def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successLabel):
@@ -13,7 +13,8 @@ def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successL
     headerFrame = ctk.CTkFrame(mainFrame)
     headerFrame.pack(side="top", anchor="n", fill="x", padx=25, pady=25)
 
-    submitterDetails = getUserDetails()
+    ###
+    submitterDetails = "test"
     submitterName = ctk.CTkLabel(
         headerFrame,
         text=f"{submitterDetails[1]}"   #index 1 to get their username

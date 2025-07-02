@@ -1,4 +1,6 @@
 
+# updated emp into employee
+
 #auth queries.py
 from BackEnd.SQLiteQueries.GeneralQueries import SQLiteCall
 
@@ -10,9 +12,9 @@ dbConn, pointer = SQLiteCall()
 def fetch_all_login_credentials():
     pointer.execute("""
                     SELECT
-                        emp_Id 
-                        ,emp_email 
-                        ,emp_password 
+                        employee_Id 
+                        ,employee_email 
+                        ,employee_password 
                     FROM Employee
                     """
                     )
@@ -24,7 +26,7 @@ def fetch_all_login_credentials():
 # queries for forgot password | Forgotpw_Backend.py
 # --------------------------------------------------------- #
 def fetch_user_credentials_by_email(email_entry):
-    query = "SELECT emp_email, emp_password FROM Employee WHERE emp_email = ?"
+    query = "SELECT employee_email, employee_password FROM Employee WHERE employee_email = ?"
 
     pointer.execute(query, (email_entry.get().strip(), ) )
     # email_pass[0] to access the email
@@ -34,7 +36,7 @@ def fetch_user_credentials_by_email(email_entry):
     return email_pass
 
 def update_user_password_by_email(hashed_password, email):
-    updatePassQuery = "UPDATE Employee SET emp_password = ? WHERE emp_email = ?"
+    updatePassQuery = "UPDATE Employee SET employee_password = ? WHERE employee_email = ?"
 
     #short validation
     try:
@@ -50,7 +52,7 @@ def update_user_password_by_email(hashed_password, email):
 # queries for sign up | Signup_Backend.py
 # --------------------------------------------------------- #
 def check_emailDuplicates_by_email(email):
-    pointer.execute("SELECT emp_email FROM Employee WHERE emp_email = ?", (email, ) )
+    pointer.execute("SELECT employee_email FROM Employee WHERE employee_email = ?", (email, ) )
     emailDuplicate_checket = pointer.fetchone()
 
     return emailDuplicate_checket
@@ -62,10 +64,10 @@ def sign_user_credentials(
     signUpQuery = """
                     INSERT INTO Employee 
                         (
-                        emp_username
-                        ,emp_email
-                        ,emp_password
-                        ,emp_type
+                        employee_username
+                        ,employee_email
+                        ,employee_password
+                        ,employee_type
                         )
                     VALUES (?, ?, ?, ?)
                     """

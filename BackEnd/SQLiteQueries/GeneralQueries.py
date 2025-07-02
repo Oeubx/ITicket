@@ -1,4 +1,7 @@
 
+# fixed comments
+# updated emp to employee
+
 #general queries.py
 
 import sqlite3 as sql
@@ -25,9 +28,10 @@ def get_dbConn():
 
 def get_pointer():
     return SQLiteCall()[1]  # get db pointer
+    
 # --------------------------------------------------------- #
-
-
+# queries for others
+# --------------------------------------------------------- #
 def hidePw(plain_password):
     # bcrypt requires bytes, so encode the string
     password_bytes = plain_password.encode('utf-8')
@@ -41,7 +45,7 @@ def hidePw(plain_password):
 
 def getEmpName_fromDb(id): #id of the passed employee
     _, pointer = SQLiteCall()
-    getDetails = "SELECT emp_username FROM Employee WHERE emp_Id = ?"
+    getDetails = "SELECT employee_username FROM Employee WHERE employee_Id = ?"
 
     pointer.execute(getDetails, (id,))
     empUsername = pointer.fetchone()
@@ -62,19 +66,20 @@ def getEmpName_fromDb(id): #id of the passed employee
 """
 # --------------------------------------------------------- #
 
-##############################################################################
-#for table creation
+# --------------------------------------------------------- #
+# queries for table creation
+# --------------------------------------------------------- #
 def employee_table_creation():
     dbConn, pointer = SQLiteCall()
 
     # changed sequence id - uname - email - pass - type //0, 1 for IT
     creation="""
         CREATE TABLE IF NOT EXISTS Employee (
-            emp_Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            emp_username TEXT,
-            emp_email TEXT,
-            emp_password TEXT,
-            emp_type INTEGER
+            employee_Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            employee_username TEXT,
+            employee_email TEXT,
+            employee_password TEXT,
+            employee_type INTEGER
         )
     """
     pointer.execute(creation)
@@ -96,7 +101,7 @@ def ticket_table_creation():
             ticket_level INTEGER,
             created_at TEXT,
             submitted_by INTEGER,
-            FOREIGN KEY (submitted_by) REFERENCES Employee(emp_Id)
+            FOREIGN KEY (submitted_by) REFERENCES Employee(employee_Id)
         );
     """
     pointer.execute(creation)
@@ -115,7 +120,7 @@ def ticket_history_table_creation():
             update_Description TEXT,
             update_Date TEXT,
             FOREIGN KEY (ticket_Id) REFERENCES Ticket(ticket_Id),
-            FOREIGN KEY (ticket_Handler) REFERENCES Employee(emp_Id)
+            FOREIGN KEY (ticket_Handler) REFERENCES Employee(employee_Id)
         );
     """
     pointer.execute(creation)
@@ -123,27 +128,28 @@ def ticket_history_table_creation():
 
     print("ticket history table creation test")
 
-##############################################################################
-#insertion of values
+# --------------------------------------------------------- #
+# queries for insertion of values
+# --------------------------------------------------------- #
 def insertion_inEmployees():
     dbConn, pointer = SQLiteCall()
 
     # have to update this goddamn it
     insertion = """
         INSERT INTO Employee (
-        emp_username,
-        emp_email,
-        emp_password,
-        emp_type
+        employee_username,
+        employee_email,
+        employee_password,
+        employee_type
         )
         VALUES (?, ?, ?, ?)    
     """
     
     #values to insert
-    value1 = "Oeubx"
-    value2 = "oeubxwaa@gmail.com"
-    value3 = hidePw("oeubxwaa")
-    value4 = 0    #0 for non IT, #1 for IT
+    value1 = "Prince Amorsolo Remo"
+    value2 = "remorat@gmail.com"
+    value3 = hidePw("remorat")
+    value4 = 1    #0 for non IT, #1 for IT
 
     pointer.execute(insertion,
                     (value1, value2, value3, value4)
@@ -208,8 +214,9 @@ def insertion_inTicketHistory():
 
     print("success insertion in ticket history")
 
-##############################################################################
-#printing of contents
+# --------------------------------------------------------- #
+# queries printing of contents
+# --------------------------------------------------------- #
 def SQLitePrinting_of_employees():
     _, pointer = SQLiteCall()
     #should change this later

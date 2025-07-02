@@ -1,4 +1,6 @@
-##loginUi
+
+# updated comments
+
 import customtkinter as ctk
 import os
 from PIL import Image
@@ -11,13 +13,6 @@ def get_refreshIcon(): #no refresh icon yet
 
     refreshIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
     return refreshIcon
-
-def get_showPassIcon(): #no show pass icon yet
-    current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "showPW.png")
-
-    showPassIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
-    return showPassIcon
 
 def get_unshowPassIcon(): #no unshow pass icon yet
     current_dir = os.path.dirname(__file__)
@@ -40,9 +35,11 @@ def get_pwIcon():
     pwIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
     return pwIcon
 
+# --------------------------------------------------------- #
+# functions for icons ^^^ | 
+# --------------------------------------------------------- #
 def load_loginpage(container, authValue, auth_callback):
     #collection of icons
-    showPass_icon = get_showPassIcon() #aint using this here 
     unshowPass_icon = get_unshowPassIcon()
     email_icon = get_emailIcon()
     pw_icon = get_pwIcon()
@@ -53,7 +50,7 @@ def load_loginpage(container, authValue, auth_callback):
         corner_radius=0,
         fg_color="#ffffff"
         )
-    lContainerFrame.pack(expand=True, pady=(0,50))
+    lContainerFrame.pack(anchor="center", expand=True, pady=(0,50))
 
     Login_Text = ctk.CTkLabel(
         lContainerFrame,

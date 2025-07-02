@@ -1,11 +1,11 @@
-#signup backend.py
+
+# updated top level message
+
 import os
 from PIL import Image
 import customtkinter as ctk
 import bcrypt # to read passwords
 import re # for email format
-
-from Assets.GradientBg import create_gradient_frame
 
 # accesses the queries necessary
 from BackEnd.SQLiteQueries.AuthQueries import check_emailDuplicates_by_email, sign_user_credentials
@@ -15,10 +15,21 @@ def show_TopLevelMessage(message):
     toplevelFrame.title("Sign Up Sub Window")
     toplevelFrame.grab_set()
 
-    gradientFrame = create_gradient_frame(toplevelFrame)
-    gradientFrame.pack(fill="both", expand=True)
+    main_container_frame = ctk.CTkFrame(
+        toplevelFrame,
+        fg_color="#a5fbff",
+        bg_color="#a5fbff"
+        )
+    main_container_frame.pack(fill="both", expand=True)
 
-    textFrame = ctk.CTkFrame(gradientFrame)
+    contentsHolder_Frame = ctk.CTkFrame(
+        main_container_frame,
+        fg_color="#a5fbff",
+        bg_color="#a5fbff"
+    )
+    contentsHolder_Frame.pack(anchor="center", padx=25, pady=25)
+
+    textFrame = ctk.CTkFrame(contentsHolder_Frame)
     textFrame.pack(side="top", padx=25, pady=(25,0))
 
     text = ctk.CTkLabel(
@@ -28,7 +39,7 @@ def show_TopLevelMessage(message):
     text.pack(padx=10, pady=10)
 
     CloseBtn = ctk.CTkButton(
-        gradientFrame,
+        contentsHolder_Frame,
         text="Close",
         command=toplevelFrame.destroy  # just closes the top-level window
     )

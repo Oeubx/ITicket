@@ -1,10 +1,10 @@
-#login backend.py
+
+# updated top level message
+
 import os
 from PIL import Image
 import customtkinter as ctk
 import bcrypt #to read passwords
-
-from Assets.GradientBg import create_gradient_frame
 
 from BackEnd.Auth.LoggedIn_Acc import loginUpdateFile
 
@@ -17,10 +17,21 @@ def show_TopLevelMessage(message):
     toplevelFrame.title("Login Error")
     toplevelFrame.grab_set()
 
-    gradientFrame = create_gradient_frame(toplevelFrame)
-    gradientFrame.pack(fill="both", expand=True)
+    main_container_frame = ctk.CTkFrame(
+        toplevelFrame,
+        fg_color="#a5fbff",
+        bg_color="#a5fbff"
+        )
+    main_container_frame.pack(fill="both", expand=True)
 
-    textFrame = ctk.CTkFrame(gradientFrame)
+    contentsHolder_Frame = ctk.CTkFrame(
+        main_container_frame,
+        fg_color="#a5fbff",
+        bg_color="#a5fbff"
+    )
+    contentsHolder_Frame.pack(anchor="center", padx=25, pady=25)
+
+    textFrame = ctk.CTkFrame(contentsHolder_Frame)
     textFrame.pack(side="top", padx=25, pady=(25,0))
 
     text = ctk.CTkLabel(
@@ -30,7 +41,7 @@ def show_TopLevelMessage(message):
     text.pack(padx=10, pady=10)
 
     CloseBtn = ctk.CTkButton(
-        gradientFrame,
+        contentsHolder_Frame,
         text="Close",
         command=toplevelFrame.destroy  # just closes the top-level window
     )

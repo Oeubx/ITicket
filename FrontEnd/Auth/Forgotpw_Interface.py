@@ -1,4 +1,6 @@
-#forgot password UI
+
+# updated comments
+
 import customtkinter as ctk
 import os
 from PIL import Image
@@ -12,13 +14,6 @@ def get_backIcon():
 
     backIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
     return backIcon
-
-def get_showPassIcon(): #no show pass icon yet
-    current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "refresh arrow.png")
-
-    showPassIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
-    return showPassIcon
 
 def get_unshowPassIcon(): #no unshow pass icon yet
     current_dir = os.path.dirname(__file__)
@@ -42,11 +37,12 @@ def get_pwIcon():
     return pwIcon
 #end of functions for the icons
 
-#main page
+# --------------------------------------------------------- #
+# functions for icons ^^^ | 
+# --------------------------------------------------------- #
 def load_forgotpwpage(container, authValue, auth_callback):
     #collection of icons
     back_icon = get_backIcon()
-    showPass_icon = get_showPassIcon()
     unshowPass_icon = get_unshowPassIcon()
     email_icon = get_emailIcon()
     pw_icon = get_pwIcon()
@@ -57,7 +53,7 @@ def load_forgotpwpage(container, authValue, auth_callback):
         corner_radius=0,
         fg_color="#ffffff"
         )
-    fpContainerFrame.pack(expand=True, pady=(0,50))
+    fpContainerFrame.pack(anchor="center", expand=True, pady=(0,50))
 
     #auth passing frame
     fpCloseBtn = ctk.CTkButton(

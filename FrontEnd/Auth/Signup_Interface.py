@@ -1,4 +1,6 @@
-#sign up UI
+
+# updated comments
+
 import customtkinter as ctk
 import os
 from PIL import Image
@@ -12,14 +14,7 @@ def get_backIcon():
     backIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
     return backIcon
 
-def get_showPassIcon(): #no show pass icon yet
-    current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "showPW.png")
-
-    showPassIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
-    return showPassIcon
-
-def get_unshowPassIcon(): #no unshow pass icon yet
+def get_unshowPassIcon():
     current_dir = os.path.dirname(__file__)
     icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "unshowPW.png")
 
@@ -47,10 +42,12 @@ def get_pwIcon():
     pwIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
     return pwIcon
 
+# --------------------------------------------------------- #
+# functions for icons ^^^ | 
+# --------------------------------------------------------- #
 def load_signuppage(container, authValue, auth_callback):
     #collection of icons
     back_icon = get_backIcon()
-    showPass_icon = get_showPassIcon()
     unshowPass_icon = get_unshowPassIcon()
     user_icon = get_userIcon()
     email_icon = get_emailIcon()
@@ -62,7 +59,7 @@ def load_signuppage(container, authValue, auth_callback):
         corner_radius=0,
         fg_color="#ffffff"
         )
-    suContainerFrame.pack(expand=True, pady=(0,50))
+    suContainerFrame.pack(anchor="center", expand=True, pady=(0,50))
 
     #auth passing frame
     suCloseBtn = ctk.CTkButton(

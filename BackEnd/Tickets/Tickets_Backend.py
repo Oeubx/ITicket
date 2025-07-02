@@ -9,7 +9,7 @@ from Assets.GradientBg import create_gradient_frame
 from FrontEnd.Tickets.TicketCreation import load_TicketCreation
 
 from BackEnd.SQLite_Calls import SQLiteCall
-from BackEnd.Auth.LoggedIn_Acc import getUserID, getUserEmpType
+#from BackEnd.Auth.LoggedIn_Acc import getUserID, getUserEmpType
 
 from BackEnd.Tickets.UpdateTicketHistory_Backend import updateTicketHistory
 
@@ -36,7 +36,8 @@ def get_ITicketIcon(window):
 
 # --------------------------------------------------------------------------------------- #
 def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order): 
-    empId = getUserID()
+    #empId = getUserID()
+    empId = "2"
 
     # Clear previous widgets
     for widget in scrollableFrame.winfo_children():
@@ -469,7 +470,8 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     
     uploadRemarkBtn.configure(
         command = lambda: updateTicketHistory( # first three of what i need for db
-            id, remarkEntry, getUserID(),
+            id, remarkEntry, 2,
+            #id, remarkEntry.get().strip(), getUserID(),
             "Update",   # the rest of what i need for widget updates
             tHandlerName, tStatus_Msg,
             bodyFrame, buttonsFrame,
@@ -479,7 +481,8 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 
     closeStatus_Btn.configure(
         command = lambda: updateTicketHistory( # first three of what i need for db
-            id, remarkEntry.get().strip(), getUserID(),
+            id, remarkEntry.get().strip(), 2,
+            #id, remarkEntry.get().strip(), getUserID(),
             "Close",   # the rest of what i need for widget updates
             tHandlerName, tStatus_Msg,
             bodyFrame, buttonsFrame,
@@ -489,7 +492,8 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 
     openStatus_Btn.configure(
         command = lambda: updateTicketHistory( # first three of what i need for db
-            id, remarkEntry.get().strip(), getUserID(),
+            id, remarkEntry.get().strip(), 2,
+            #id, remarkEntry.get().strip(), getUserID(),
             "Open",   # the rest of what i need for widget updates
             tHandlerName, tStatus_Msg,
             bodyFrame, buttonsFrame,
@@ -497,7 +501,8 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
             )
     )
 
-    loggedUserId = getUserEmpType()
+    #loggedUserId = getUserEmpType()
+    loggedUserId = 1
 
     if loggedUserId == 0:
         remarksText.pack_forget()
