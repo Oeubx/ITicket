@@ -4,22 +4,22 @@ import customtkinter as ctk
 from datetime import datetime   #for date n time
 curr_dateTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-from Assets.GradientBg import create_gradient_frame
-
-from BackEnd.SQLite_Calls import SQLiteCall
-dbConn, pointer = SQLiteCall()
+from BackEnd.SQLiteQueries.TicketQueries import *
 
 def showTicketReopenWindow(status, defaultStatus):
     ticketReopen_window = ctk.CTkToplevel()
     ticketReopen_window.title("Ticket Status")
     ticketReopen_window.grab_set()
 
-    gradientFrame = create_gradient_frame(ticketReopen_window)
-    gradientFrame.pack(fill="both", expand=True)
+    frameHolder = ctk.CTkFrame(
+        ticketReopen_window,
+        fg_color="#a5fbff",
+        bg_color="#a5fbff"
+        )
+    frameHolder.pack(fill="both", expand=True)
 
-    # Fix: container for all widgets
-    container = ctk.CTkFrame(gradientFrame, fg_color="transparent")
-    container.pack(expand=True)  # Use expand to center it vertically
+    container = ctk.CTkFrame(frameHolder, fg_color="transparent")
+    container.pack(expand=True)
 
     labelFrame = ctk.CTkFrame(container, fg_color="transparent")
     labelFrame.pack(padx=25, pady=15)
@@ -64,29 +64,23 @@ def showTicketReopenWindow(status, defaultStatus):
     confirmBtn.pack(side="left", padx=10)
 
     ticketReopen_window.wait_window()
+
     return result.get(), statusTextVar.get().strip()
 
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
+# for ticket history reloading when updating | --.py
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
 def renderTicketHistory(bodyFrame, ticketId):
     # clear history
     for widget in bodyFrame.winfo_children():
         widget.destroy()
 
-    selectTicketHistory = """
-        SELECT * FROM Ticket_History
-        WHERE ticket_Id = ?
-        ORDER BY "updatedAt" ASC
-    """
-    pointer.execute(selectTicketHistory, (ticketId,))
-    ticketHistoryDetailsHolder = pointer.fetchall()
+    # query for this ticket's history
+    ticketHistoryDetailsHolder = get_ThisTicketsHistory(ticketId)
 
     if ticketHistoryDetailsHolder:
         xDivider = ctk.CTkFrame(bodyFrame, height=2, fg_color="gray")
@@ -94,7 +88,7 @@ def renderTicketHistory(bodyFrame, ticketId):
 
         # loop to continously generate the ticket history
         for row in ticketHistoryDetailsHolder:    
-            th_id, ticketId_ptr, handler, updateDesc, updatedAt = row
+            handler, updateDesc = row
 
             th_Frame = ctk.CTkFrame(
                 bodyFrame
@@ -103,13 +97,7 @@ def renderTicketHistory(bodyFrame, ticketId):
             th_Frame.pack_propagate(True)  # allows the frame to size to its content
 
             #query to get ticket submitters username
-            getHandlerName_query = """
-                SELECT emp_username FROM Employee WHERE emp_Id = ?
-            """
-            pointer.execute(getHandlerName_query, (handler, ))
-            handlerNameResult = pointer.fetchone()
-
-            handlerName = handlerNameResult[0] if handlerNameResult else "Unkown Ticket Handler"
+            handlerName = get_TicketHandlers_Name(handler)
 
             # Inner frame for aligning contents neatly
             th_innerFrame = ctk.CTkFrame(th_Frame, fg_color="transparent")
@@ -133,15 +121,13 @@ def renderTicketHistory(bodyFrame, ticketId):
             )
             th_updateDesc.pack(anchor="w", pady=2)
 
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
+# logic for updating ticket History | --.py
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
 def updateTicketHistory(
         ticketId, remarkEntryWidget, handlerId,
         stringStatus,
@@ -155,104 +141,32 @@ def updateTicketHistory(
     if stringStatus == "Update":
         updateDescription = remarkEntryWidget.get().strip()
 
-        insert_TH_query = """
-            INSERT INTO Ticket_History (
-                ticket_id,
-                ticket_Handler,
-                update_Description,
-                update_Date           
-                )
-            VALUES (?, ?, ?, ?)    
-        """
-        pointer.execute(insert_TH_query,
-                        (ticketId, handlerId, updateDescription, curr_dateTime)
-                        )
-        dbConn.commit()
+        update_thisTicket(ticketId, handlerId, updateDescription)
 
-        # i dont think we need to update ticket status if plain update
-        #updates the ticket status
-        # 0 for open
-        # 1 for close
-        #update_Ticket_query = """
-        #    UPDATE Ticket
-        #    SET
-        #        ticket_status = ?
-        #    WHERE ticket_Id = ?
-        #"""
-        #pointer.execute(update_Ticket_query, (1, ticketId))
-        #dbConn.commit()
-        #
-
-        #clears the widget
         remarkEntryWidget.delete(0, "end")
+        #
     elif stringStatus == "Open":
         updateDescription = "Re-open this Ticket"
         confirmTicketStatus, updateDescription = showTicketReopenWindow(stringStatus, updateDescription)
 
         if confirmTicketStatus:
-            insert_TH_query = """
-                INSERT INTO Ticket_History (
-                    ticket_id,
-                    ticket_Handler,
-                    update_Description,
-                    update_Date           
-                    )
-                VALUES (?, ?, ?, ?)    
-            """
-            pointer.execute(insert_TH_query,
-                            (ticketId, handlerId, updateDescription, curr_dateTime)
-                            )
-            dbConn.commit()
-
-            #updates the ticket status
-            update_Ticket_query = """
-                UPDATE Ticket
-                SET
-                    ticket_status = ?
-                WHERE ticket_Id = ?
-            """
-            # 0 default value to re open the ticket
-            pointer.execute(update_Ticket_query, (0, ticketId))
-            dbConn.commit()
+            update_thisTicket(ticketId, handlerId, updateDescription)
+            update_thisTicketsStatus(stringStatus, ticketId)
+        #
     elif stringStatus == "Close":
         updateDescription = "Close this ticket"
         confirmTicketStatus, updateDescription = showTicketReopenWindow(stringStatus, updateDescription)
 
         if confirmTicketStatus:
-            insert_TH_query = """
-                INSERT INTO Ticket_History (
-                    ticket_id,
-                    ticket_Handler,
-                    update_Description,
-                    update_Date           
-                    )
-                VALUES (?, ?, ?, ?)    
-            """
-            pointer.execute(insert_TH_query,
-                            (ticketId, handlerId, updateDescription, curr_dateTime)
-                            )
-            dbConn.commit()
+            update_thisTicket(ticketId, handlerId, updateDescription)
+            update_thisTicketsStatus(stringStatus, ticketId)
+        #
+            
+    #query to get ticket submitters username
+    handlerName = get_TicketHandlers_Name(handlerId)
 
-            #updates the ticket status
-            update_Ticket_query = """
-                UPDATE Ticket
-                SET
-                    ticket_status = ?
-                WHERE ticket_Id = ?
-            """
-            # 1 default value to re open the ticket
-            pointer.execute(update_Ticket_query, (1, ticketId))
-            dbConn.commit()
-    # end of if, elif, elif ahh
-
-    getHandlerName_query = """
-        SELECT emp_username FROM Employee WHERE emp_Id = ?
-        """
-    pointer.execute(getHandlerName_query, (handlerId, ))
-    result = pointer.fetchone()
-
-    if result:
-        handlerWidget.configure(text=result[0])
+    if handlerName:
+        handlerWidget.configure(text=handlerName)
     else:
         handlerWidget.configure(text="No handler yet")
     
@@ -275,3 +189,4 @@ def updateTicketHistory(
         closeBtn.pack(side="right", padx=25)
 
     # i need to refresh the ticket interface too
+    # why?

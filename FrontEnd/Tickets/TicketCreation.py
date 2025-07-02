@@ -3,6 +3,7 @@ import customtkinter as ctk
 
 #from BackEnd.SQLiteQueries.LoggedInAcc_Queries import fetch_all_user_credentials
 from BackEnd.Tickets.TicketCreation_Backend import update_problems, submitTicket
+from BackEnd.SQLiteQueries.TicketQueries import *
 
 def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successLabel):
     buttonFrame.pack_forget()
@@ -14,10 +15,11 @@ def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successL
     headerFrame.pack(side="top", anchor="n", fill="x", padx=25, pady=25)
 
     ###
-    submitterDetails = "test"
+    userId = get_loggedIn_UsersId()
+    submitterUsername = get_userName(userId)
     submitterName = ctk.CTkLabel(
         headerFrame,
-        text=f"{submitterDetails[1]}"   #index 1 to get their username
+        text=f"{submitterUsername}"
     )
     submitterName.pack(side="left", padx=15, pady=15)
 
@@ -33,6 +35,13 @@ def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successL
         mainFrame
     )
     ticketContentsFrame.pack(side="top", fill="x", padx=25)
+
+    ticketTitleEntry = ctk.CTkEntry(
+        ticketContentsFrame,
+        placeholder_text="Type Ticket Title Here",
+        width=250
+    )
+    ticketTitleEntry.pack(side="top", anchor="nw", padx=25, pady=(25,0))
 
     # Categories
     categories = [
@@ -160,20 +169,30 @@ def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successL
     )
     buttonsFrame.pack(side="top", anchor="e", padx=25, pady=25)
 
-    cancelTicketSubmissionBtn = ctk.CTkButton(
+    cancelTicketSubmissionBtn = ctk.CTkButton(buttonsFrame)
+    cancelTicketSubmissionBtn.pack(side="left", anchor="e", padx=25, pady=25)
+
+    submitTicketBtn = ctk.CTkButton(buttonsFrame)
+    submitTicketBtn.pack(side="left", anchor="e", padx=25, pady=25)
+
+    errorLabel2 = ctk.CTkLabel(
         buttonsFrame,
+        text="Error Ticket Submission",
+        text_color="#FF0000"
+        )
+    errorLabel2.pack_forget()
+
+    cancelTicketSubmissionBtn.configure(
         text="Cancel",
         command= toplevelWindow.destroy
     )
-    cancelTicketSubmissionBtn.pack(side="left", anchor="e", padx=25, pady=25)
 
-    submitTicketBtn = ctk.CTkButton(
-        buttonsFrame,
+    submitTicketBtn.configure(
         text="Submit Ticket",
         command=lambda: submitTicket(
-            ticketLevel, category_dropdown, 
-            selected_problem, ticketSubDescription, errorLabel1,
+            ticketLevel, ticketTitleEntry, category_dropdown, 
+            selected_problem, ticketSubDescription,
+            errorLabel1, errorLabel2,
             mainFrame, successLabel 
             )
     )
-    submitTicketBtn.pack(side="left", anchor="e", padx=25, pady=25)

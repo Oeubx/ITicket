@@ -38,7 +38,7 @@ def load_ticketsInterface(frame):
     #header widgets
     tDropdown = ctk.CTkOptionMenu(
         leftFrame,
-        values=["All Tickets", "My tickets", "Inquiries", "Non-urgent", "Urgent"]
+        values=["All Tickets", "My tickets", "Inquiries", "Non-Urgent", "Urgent"]
         #command = is in the bottom most part
     )
     tDropdown.pack(side="top", anchor="w", padx=25, pady=(25,5))
@@ -54,8 +54,8 @@ def load_ticketsInterface(frame):
     scrollable_frame.configure(
         width=400,
         height=400,
-        fg_color="white",       # optional background color
-        scrollbar_fg_color="gray",  # optional styling
+        fg_color="white",
+        scrollbar_fg_color="gray",
     )
     scrollable_frame.pack(side="top", padx=20, fill="both", expand=True)
 

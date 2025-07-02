@@ -6,12 +6,17 @@
 
 import sqlite3 as sql
 import bcrypt
-from datetime import datetime   #for date n time
 
 _dbConn = None
 _pointer = None
 
-curr_dateTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+#from datetime import datetime   #for date n time of ticket
+#curr_dateTime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+# file stuffs
+#project_folder = os.path.dirname(os.path.abspath(__file__))
+#filePointer = r"C:\BIBOYstuffs\\CODES\\PYTHON CODES\\ITicket\BackEnd\Auth\\previously_logged_in_details.txt"
+
 
 def SQLiteCall():
     global _dbConn, _pointer
@@ -75,11 +80,11 @@ def employee_table_creation():
     # changed sequence id - uname - email - pass - type //0, 1 for IT
     creation="""
         CREATE TABLE IF NOT EXISTS Employee (
-            employee_Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            employee_username TEXT,
-            employee_email TEXT,
-            employee_password TEXT,
-            employee_type INTEGER
+            employee_Id INTEGER PRIMARY KEY AUTOINCREMENT
+            ,employee_username TEXT NOT NULL
+            ,employee_email TEXT NOT NULL
+            ,employee_password TEXT NOT NULL
+            ,employee_type INTEGER NOT NULL
         )
     """
     pointer.execute(creation)
@@ -91,17 +96,17 @@ def ticket_table_creation():
     dbConn, pointer = SQLiteCall()
 
     # ticket status = closed or open
-    # ticket level = 0 for inquiry, 1 for non urgent, 2 for urgent
+    # ticket level = Inquiry, Non-Urgent, Urgent
     creation="""
         CREATE TABLE IF NOT EXISTS Ticket (
-            ticket_Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ticket_title TEXT,
-            ticket_desc TEXT,
-            ticket_status INTEGER,
-            ticket_level INTEGER,
-            created_at TEXT,
-            submitted_by INTEGER,
-            FOREIGN KEY (submitted_by) REFERENCES Employee(employee_Id)
+            ticket_Id INTEGER PRIMARY KEY AUTOINCREMENT
+            ,ticket_title TEXT NOT NULL
+            ,ticket_desc TEXT NOT NULL
+            ,ticket_status TEXT NOT NULL DEFAULT 'Open'
+            ,ticket_level TEXT NOT NULL
+            ,created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            ,submitted_by INTEGER NOT NULL
+            ,FOREIGN KEY (submitted_by) REFERENCES Employee(employee_Id)
         );
     """
     pointer.execute(creation)
@@ -114,13 +119,13 @@ def ticket_history_table_creation():
 
     creation="""
         CREATE TABLE IF NOT EXISTS Ticket_History (
-            ticket_history_Id INTEGER PRIMARY KEY AUTOINCREMENT,
-            ticket_Id INTEGER,
-            ticket_Handler INTEGER,
-            update_Description TEXT,
-            update_Date TEXT,
-            FOREIGN KEY (ticket_Id) REFERENCES Ticket(ticket_Id),
-            FOREIGN KEY (ticket_Handler) REFERENCES Employee(employee_Id)
+            ticket_history_Id INTEGER PRIMARY KEY AUTOINCREMENT
+            ,ticket_Id INTEGER NOT NULL
+            ,ticket_Handler INTEGER NULL
+            ,update_Description TEXT NOT NULL
+            ,update_Date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+            ,FOREIGN KEY (ticket_Id) REFERENCES Ticket(ticket_Id)
+            ,FOREIGN KEY (ticket_Handler) REFERENCES Employee(employee_Id)
         );
     """
     pointer.execute(creation)
@@ -134,41 +139,44 @@ def ticket_history_table_creation():
 def insertion_inEmployees():
     dbConn, pointer = SQLiteCall()
 
-    # have to update this goddamn it
     insertion = """
         INSERT INTO Employee (
-        employee_username,
-        employee_email,
-        employee_password,
-        employee_type
+            employee_username
+            ,employee_email
+            ,employee_password
+            ,employee_type
         )
         VALUES (?, ?, ?, ?)    
     """
-    
-    #values to insert
-    value1 = "Prince Amorsolo Remo"
-    value2 = "remorat@gmail.com"
-    value3 = hidePw("remorat")
-    value4 = 1    #0 for non IT, #1 for IT
 
-    pointer.execute(insertion,
-                    (value1, value2, value3, value4)
-                    )
+    # First account
+    value1a = "Prince Amorsolo Remo"
+    value2a = "remorat@gmail.com"
+    value3a = hidePw("remorat")
+    value4a = 1  # IT
+
+    # Second account
+    value1b = "Oeubx"
+    value2b = "oeubxwaa@gmail.com"
+    value3b = hidePw("oeubxwaa")
+    value4b = 0  # non-IT
+
+    # Insert both
+    pointer.execute(insertion, (value1a, value2a, value3a, value4a))
+    pointer.execute(insertion, (value1b, value2b, value3b, value4b))
+
     dbConn.commit()
-
-    print("success insertion in employee")
+    print("Successfully inserted 2 employee accounts")
 
 def insertion_inTicket():#
     dbConn, pointer = SQLiteCall()
 
     insertion = """
         INSERT INTO Ticket (
-            ticket_title,
-            ticket_desc,
-            ticket_status,
-            ticket_level,
-            created_at,
-            submitted_by
+            ticket_title
+            ,ticket_desc
+            ,ticket_level
+            ,submitted_by
             )
         VALUES (?, ?, ?, ?, ?, ?)    
     """
@@ -176,13 +184,11 @@ def insertion_inTicket():#
     #values to insert
     value0 = "TICKET TITLE 1"
     value1 = "DESCRIPTION for id insertion1"
-    value2 = 0 #0 for open, 1 for close
-    value3 = 1 #0 for inquiry, 1 for nonurgent, 2 for urgent
-    value4 = curr_dateTime
-    value5 = 1 #emp id of user who submitted the tix
+    value2 = "Inquiry"
+    value3 = 1 #emp id of user who submitted the tix
 
     pointer.execute(insertion, (
-        value0, value1, value2, value3, value4, value5)
+        value0, value1, value2, value3)
         )
     dbConn.commit()
 
@@ -193,10 +199,9 @@ def insertion_inTicketHistory():
 
     insertion = """
         INSERT INTO Ticket_History (
-            ticket_id,
-            ticket_Handler,
-            update_Description,
-            update_Date           
+            ticket_id
+            ,ticket_Handler
+            ,update_Description   
             )
         VALUES (?, ?, ?, ?)    
     """
@@ -205,10 +210,9 @@ def insertion_inTicketHistory():
     value1 = 1 #ticket id
     value2 = None
     value3 = "no updated desc yet"
-    value4 = None #passes None so db will read it as NULL
 
     pointer.execute(insertion,
-                    (value1, value2, value3, value4)
+                    (value1, value2, value3)
                     )
     dbConn.commit()
 

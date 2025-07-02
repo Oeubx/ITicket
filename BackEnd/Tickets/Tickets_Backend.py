@@ -4,40 +4,25 @@ import os
 import customtkinter as ctk
 from PIL import Image, ImageTk
 
-from Assets.GradientBg import create_gradient_frame
-
 from FrontEnd.Tickets.TicketCreation import load_TicketCreation
 
-from BackEnd.SQLite_Calls import SQLiteCall
-#from BackEnd.Auth.LoggedIn_Acc import getUserID, getUserEmpType
-
 from BackEnd.Tickets.UpdateTicketHistory_Backend import updateTicketHistory
+from BackEnd.SQLiteQueries.TicketQueries import *
+from BackEnd.SQLiteQueries.LoggedInAcc_Queries import get_userEmpType
 
-_, pointer = SQLiteCall()
 
+# global variable
 current_displayed_ticket_id = None
 all_ticket_buttons = {}
 
-def get_ITicketIcon(window):
-    current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "Assets", "Icons", "main logo.png")
-
-    image = Image.open(icon_path)
-    icon = ImageTk.PhotoImage(image)
-    return icon
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
+# logic for ticket reloading | --.py
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
 def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order): 
-    #empId = getUserID()
-    empId = "2"
 
     # Clear previous widgets
     for widget in scrollableFrame.winfo_children():
@@ -49,53 +34,23 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
     elif filter_order == "Descending" :
         sortOrder = "DESC"
 
-    select_AllTickets = f"SELECT * FROM Ticket ORDER BY created_at {sortOrder}"
-
-    select_LoggedUsersTickets = f"SELECT * FROM Ticket WHERE submitted_by = ? ORDER BY created_at {sortOrder}"
-    loggedUser_Id = empId
-
-    select_TicketLevel = f"SELECT * FROM Ticket WHERE ticket_level = ? ORDER BY created_at {sortOrder}"
-    
-    #select_AllTickets = "SELECT * FROM Ticket"
-    #select_LoggedUsersTickets = "SELECT * FROM Ticket WHERE submitted_by = ?"
-    #select_TicketLevel = "SELECT * FROM Ticket WHERE ticket_level = ?"
+    loggedUser_Id = get_loggedIn_UsersId()
 
     if value == "All Tickets":
-        pointer.execute(select_AllTickets)
+        ticket_ContentsHolder = get_AllTickets(sortOrder)
     elif value == "My tickets":
-        pointer.execute(select_LoggedUsersTickets, (loggedUser_Id, ))
+        ticket_ContentsHolder = get_MyTickets(loggedUser_Id, sortOrder)
     elif value == "Inquiries":
-        pointer.execute(select_TicketLevel, (0, ))
-    elif value == "Non-urgent":
-        pointer.execute(select_TicketLevel, (1, ))
+        ticket_ContentsHolder = get_TicketByLevel("Inquiry", sortOrder)
+    elif value == "Non-Urgent":
+        ticket_ContentsHolder = get_TicketByLevel(value, sortOrder)
     elif value == "Urgent":
-        pointer.execute(select_TicketLevel, (2, ))
-
-    # collects the data
-    ticket_ContentHolder = pointer.fetchall()
+        ticket_ContentsHolder = get_TicketByLevel(value, sortOrder)
 
     #start of loop
-    for row in ticket_ContentHolder:
+    for row in ticket_ContentsHolder:
         #saves each of the contents in these variables
-        id, title, desc, status, level, created_at, submitted_by = row
-
-        statusMessage = ""
-        if status == 0:
-            statusMessage = "Open"
-        elif status == 1 :
-            statusMessage = "Close"
-        else :
-            statusMessage = "Error Ticket Status"
-
-        levelMessage = ""
-        if level == 0 :
-            levelMessage = "Inquiry"
-        elif level == 1 :
-            levelMessage = "Non - Urgent"
-        elif level == 2 :
-            levelMessage = "Urgent"
-        else :
-            levelMessage = "Error Ticket Level"
+        id, title, status, level, created_at, submitted_by = row
 
         #creation of widget for every tickets
         tContentFrame = ctk.CTkFrame(
@@ -115,14 +70,8 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
         ticket_headerFrame = ctk.CTkFrame(ticket_LeftFrame)
         ticket_headerFrame.pack(side="top", anchor="w")
 
-        #query to get ticket submitters username
-        getSubmitterName_query = """
-            SELECT emp_username FROM Employee WHERE emp_Id = ?
-        """
-        pointer.execute(getSubmitterName_query, (submitted_by, ))
-        submitterNameResult = pointer.fetchone()
-
-        submitterName = submitterNameResult[0] if submitterNameResult else "Unkown Ticket Submitter | "
+        #query to get ticket submitters username | submitted by is an ID
+        submitterName = get_TicketSubmitterName(submitted_by)
 
         ticketSubmitter = ctk.CTkLabel(
             ticket_headerFrame,
@@ -133,14 +82,14 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
 
         ticketTitle = ctk.CTkLabel(
             ticket_headerFrame,
-            text=f"{title} | ",  #assigns ticket title
+            text=f"{title} | ",
             font=("Arial", 16, "bold")
         )
         ticketTitle.pack(side="left", anchor="nw")
 
         ticketLevel = ctk.CTkLabel(
             ticket_headerFrame,
-            text=f"{levelMessage}",  #assigns ticket level
+            text=f"{level}",
             font=("Arial", 16, "bold")
         )
         ticketLevel.pack(side="left", anchor="nw")
@@ -151,37 +100,23 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
 
         ticketDate = ctk.CTkLabel(
             ticket_subFrame,
-            text=f"Created at {created_at} | "     #assigns ticket date created at
+            text=f"Created at {created_at} | "
         )
         ticketDate.pack(side="left")
 
-         # logic for handler
-        # Get latest handler for the ticket
-        latestHandlerQuery = """
-            SELECT ticket_Handler
-            FROM Ticket_History
-            WHERE ticket_Id = ?
-            ORDER BY "updatedAt" DESC
-            LIMIT 1
-        """
-        #DESCENDING takes the latest history and the handler,
-        # LIMIT 1 takes the first only
-        pointer.execute(latestHandlerQuery, (id,))
-        latestHandlerResult = pointer.fetchone()
-
-        latestHandler = latestHandlerResult[0] if latestHandlerResult else "No Handler"
-        #
+        # query
+        latestHandler = get_LatestHandler(id)
 
         ticketHandler = ctk.CTkLabel(
             ticket_subFrame,
-            text=f"{latestHandler}"    #assigns FK referencing emp_id of IT emp
+            text=f"{latestHandler}"
         )
         ticketHandler.pack(side="left")
 
         #contents of right frame
         ticketStatus = ctk.CTkLabel(
             ticket_frame,
-            text=f"{statusMessage}"     # if close or open
+            text=f"{status}"
             )
         ticketStatus.pack(side="top", pady=5)
 
@@ -201,15 +136,13 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
             btn=ticketRemarks: showFullTicket(divider, rFrame, tid, btn)
         )
 
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
+# logic for showing full ticket | --.py
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
 def showFullTicket(divider, frame, ticketId, clicked_btn):
     global current_displayed_ticket_id, all_ticket_buttons
 
@@ -237,50 +170,23 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     clicked_btn.configure(text="Close Ticket")
 
     # query for ticket
-    selectTicket = "SELECT * FROM Ticket WHERE ticket_Id = ?"
-    pointer.execute(selectTicket, (ticketId,))
-    ticketDetailsHolder = pointer.fetchone()
-    #saves it ^ here v
-    id, title, desc, status, level, created_at, submitted_by = ticketDetailsHolder
-    #were not displaying created_at, submitted_by anyway
+    ticketDetailsHolder = get_TicketDetails(ticketId)
+    # get from ^ saves it here v
+    id, title, desc, status, level, submitted_by = ticketDetailsHolder
 
-    statusMessage = ""
-    if status == 0:
-        statusMessage = "Open"
-    elif status == 1 :
-        statusMessage = "Close"
-    else :
-        statusMessage = "Error Ticket Status"
-
-    levelMessage = ""
-    if level == 0 :
-        levelMessage = "Inquiry"
-    elif level == 1 :
-        levelMessage = "Non - Urgent"
-    elif level == 2 :
-        levelMessage = "Urgent"
-    else :
-        levelMessage = "Error Ticket Level"
-
-    # ─── Reset View ──────────────────────────────────────
-    for widget in frame.winfo_children():  # remove previous content
+    # remove previous content
+    for widget in frame.winfo_children():
         widget.destroy()
 
     divider.pack(side="left", fill="y", padx=10, pady=10)
     frame.pack(side="left", fill="both", expand=True)
 
-    # ─── Container Frame for Full Ticket ─────────────────
+    # 
     fullticketFrame = ctk.CTkFrame(frame, fg_color="#ffffff")
     fullticketFrame.pack(fill="both", expand=True)
 
-    #query to get ticket submitters username
-    getSubmitterName_query = """
-        SELECT emp_username FROM Employee WHERE emp_Id = ?
-    """
-    pointer.execute(getSubmitterName_query, (submitted_by, ))
-    submitterNameResult = pointer.fetchone()
-
-    submitterName = submitterNameResult[0] if submitterNameResult else "Unkown Ticket Submitter | "
+    #query to get ticket submitters username | submitted by is an ID
+    submitterName = get_TicketSubmitterName(submitted_by)
 
     ticketSubmitter = ctk.CTkLabel(
             fullticketFrame,
@@ -304,26 +210,13 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         )
     tHandlerText.pack(side="left")
 
-    # logic for handler
-    # Get latest handler for the ticket
-    latestHandlerQuery = """
-        SELECT ticket_Handler
-        FROM Ticket_History
-        WHERE ticket_Id = ?
-        ORDER BY "updatedAt" DESC
-        LIMIT 1
-    """
-    #DESCENDING takes the latest history and the handler,
-    # LIMIT 1 takes the first only
-    pointer.execute(latestHandlerQuery, (id,))
-    latestHandlerResult = pointer.fetchone()
-
-    latestHandler = latestHandlerResult[0] if latestHandlerResult else "No Handler"
-    #
+    # query
+    latestHandler = get_LatestHandler(id)
+    handlerName = get_TicketHandlers_Name(latestHandler)
 
     tHandlerName = ctk.CTkLabel(
         headerFrame,
-        text=f"{latestHandler}",
+        text=f"{handlerName}",
         text_color="#5e4b45",
         font=("Arial", 15, "bold")
         )
@@ -331,7 +224,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 
     tStatus_Msg = ctk.CTkLabel(
         headerFrame,
-        text=statusMessage,
+        text=status,
         text_color="#5e4b45",
         font=("Arial", 15, "bold")
         )
@@ -339,7 +232,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 
     tStatus_Level = ctk.CTkLabel(
         headerFrame,
-        text=f"{levelMessage} | ",
+        text=f"{level} | ",
         text_color="#5e4b45",
         font=("Arial", 15, "bold")
         )
@@ -376,15 +269,10 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 
     # -------------------------------------------------------------------------------- #
     # Ticket History
+    # -------------------------------------------------------------------------------- #
 
     # query for this ticket's history
-    selectTicketHistory = """
-        SELECT * FROM Ticket_History
-        WHERE ticket_Id = ?
-        ORDER BY "updatedAt" ASC
-    """
-    pointer.execute(selectTicketHistory, (id,))
-    ticketHistoryDetailsHolder = pointer.fetchall()
+    ticketHistoryDetailsHolder = get_ThisTicketsHistory(id)
 
     # if it has contents
     if ticketHistoryDetailsHolder:
@@ -393,7 +281,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 
         # loop to continously generate the ticket history
         for row in ticketHistoryDetailsHolder:    
-            th_id, ticketId_ptr, handler, updateDesc, updatedAt = row
+            handler, updateDesc = row
 
             th_Frame = ctk.CTkFrame(
                 bodyFrame
@@ -402,13 +290,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
             th_Frame.pack_propagate(True)  # allows the frame to size to its content
 
             #query to get ticket submitters username
-            getHandlerName_query = """
-                SELECT emp_username FROM Employee WHERE emp_Id = ?
-            """
-            pointer.execute(getHandlerName_query, (handler, ))
-            handlerNameResult = pointer.fetchone()
-
-            handlerName = handlerNameResult[0] if handlerNameResult else "Unkown Ticket Handler"
+            handlerName = get_TicketHandlers_Name(handler)
 
             # Inner frame for aligning contents neatly
             th_innerFrame = ctk.CTkFrame(th_Frame, fg_color="transparent")
@@ -481,8 +363,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 
     closeStatus_Btn.configure(
         command = lambda: updateTicketHistory( # first three of what i need for db
-            id, remarkEntry.get().strip(), 2,
-            #id, remarkEntry.get().strip(), getUserID(),
+            id, remarkEntry.get().strip(), get_loggedIn_UsersId(),
             "Close",   # the rest of what i need for widget updates
             tHandlerName, tStatus_Msg,
             bodyFrame, buttonsFrame,
@@ -492,8 +373,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 
     openStatus_Btn.configure(
         command = lambda: updateTicketHistory( # first three of what i need for db
-            id, remarkEntry.get().strip(), 2,
-            #id, remarkEntry.get().strip(), getUserID(),
+            id, remarkEntry.get().strip(), get_loggedIn_UsersId(),
             "Open",   # the rest of what i need for widget updates
             tHandlerName, tStatus_Msg,
             bodyFrame, buttonsFrame,
@@ -501,8 +381,8 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
             )
     )
 
-    #loggedUserId = getUserEmpType()
-    loggedUserId = 1
+    # query from logged in acc _ queries .py
+    loggedUserId = get_userEmpType()
 
     if loggedUserId == 0:
         remarksText.pack_forget()
@@ -513,33 +393,41 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         remarksFrame.pack(side="top", anchor="w", fill="x", padx=25)
 
         buttonsFrame.pack(side="top", anchor="se", fill="x", padx=25, pady=25)
-        if status == 0:     #if ticket is open //0
+        if status == "Open":
             closeStatus_Btn.pack(side="right", padx=25)
-        elif status == 1:   #if ticket is closed //1
+        elif status == "Close":
             openStatus_Btn.pack(side="right", padx=25)
 
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
-
-# --------------------------------------------------------------------------------------- #
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
+# show ticket creation frame | --.py
+# --------------------------------------------------------- #
+# 
+# --------------------------------------------------------- #
 def show_tcf():
     submitTicketWindow = ctk.CTkToplevel()
     submitTicketWindow.title("Submit a Ticket")
     submitTicketWindow.grab_set()
 
-    #reused the gradient bg
-    gradientFrame = create_gradient_frame(submitTicketWindow)
-    gradientFrame.pack(fill="both", expand=True)
+    main_container_frame = ctk.CTkFrame(
+        submitTicketWindow,
+        fg_color="#a5fbff",
+        bg_color="#a5fbff"
+        )
+    main_container_frame.pack(fill="both", expand=True)
 
-    buttonFrame = ctk.CTkFrame(gradientFrame)
+    contentsHolder_Frame = ctk.CTkFrame(
+        main_container_frame,
+        fg_color="#a5fbff",
+        bg_color="#a5fbff"
+    )
+    contentsHolder_Frame.pack(fill="both", expand=True, anchor="center", padx=25, pady=25)
+
+    buttonFrame = ctk.CTkFrame(contentsHolder_Frame)
     buttonFrame.pack(side="top", padx=25, pady=25)
 
-    labelFrame = ctk.CTkFrame(gradientFrame)
+    labelFrame = ctk.CTkFrame(contentsHolder_Frame)
     labelFrame.pack(side="top", padx=25, pady=25)
     labelFrame.pack_forget()
 
@@ -555,7 +443,7 @@ def show_tcf():
         buttonFrame,
         text="Inquiry",
         command = lambda: load_TicketCreation(
-            submitTicketWindow, gradientFrame, 0, buttonFrame, labelFrame
+            submitTicketWindow, contentsHolder_Frame, 0, buttonFrame, labelFrame
             )
     )
     tcfInquireBtn.pack(side="left", padx=25, pady=25)
@@ -564,7 +452,7 @@ def show_tcf():
         buttonFrame,
         text="Non Urgent",
         command = lambda: load_TicketCreation(
-            submitTicketWindow, gradientFrame, 1, buttonFrame, labelFrame
+            submitTicketWindow, contentsHolder_Frame, 1, buttonFrame, labelFrame
             )
     )
     tcfNonUrgentBtn.pack(side="left", padx=25, pady=25)
@@ -573,7 +461,7 @@ def show_tcf():
         buttonFrame,
         text="Urgent",
         command = lambda: load_TicketCreation(
-            submitTicketWindow, gradientFrame, 2, buttonFrame, labelFrame
+            submitTicketWindow, contentsHolder_Frame, 2, buttonFrame, labelFrame
             )
     )
     tcfUrgentBtn.pack(side="left", padx=25, pady=25)
