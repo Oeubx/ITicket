@@ -8,11 +8,11 @@ import customtkinter as ctk
 from FrontEnd.Menu.Edit_Profile_Interface import load_Profile
 #from FrontEnd.Menu.MyTickets_Interface import load_MyTickets
 
-def gotoProfile(barFrame, mainFrame):
+def gotoProfile(mainFrame, headerFrame):
     for widget in mainFrame.winfo_children():
-        widget.destroy()
+        if widget != headerFrame:
+            widget.destroy()
 
-    #mainFrame.pack(side="left", fill="both", expand=True)
     load_Profile(mainFrame)
 
 # def go to users tickets

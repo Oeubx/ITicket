@@ -74,9 +74,11 @@ def load_dashboard(container, authValue, auth_callback):
         fg_color="transparent",
         hover_color="#000000",
         # dashboard backend
-        command=lambda: show_menu(auth_callback,
-                                  container, barFrame, mainFrame,
-                                  menuIconBtn)
+        command=lambda: show_menu(
+            auth_callback,
+            container, barFrame, mainFrame,
+            headerFrame, dContentsFrame  # ✅ INCLUDE headerFrame
+        )
     )
 
     menuIconBtn.pack(side="left", anchor="nw", pady=25, padx=25)
@@ -92,7 +94,9 @@ def load_dashboard(container, authValue, auth_callback):
     # pass this for contents
     dContentsFrame = ctk.CTkFrame(
         contentFrame,
-        fg_color= "#a5fbff",
-        bg_color= "#a5fbff"
+        fg_color= "#000000",
+        bg_color= "#ffffff"
         )
     dContentsFrame.pack(fill="both", expand=True, padx=25, pady=25)
+
+    load_ticketsInterface(dContentsFrame)

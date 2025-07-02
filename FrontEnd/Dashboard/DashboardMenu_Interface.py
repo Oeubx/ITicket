@@ -28,9 +28,10 @@ def get_arrowBackIcon():
 # --------------------------------------------------------- #
 def load_dashboardMenu(
         auth_callback,
-        container, barFrame, mainFrame,
+        container, barFrame, mainFrame, headerFrame,
         toggle_callback
     ):
+
     
     if hasattr(barFrame, "loaded") and barFrame.loaded:
         return  # Already built
@@ -52,8 +53,7 @@ def load_dashboardMenu(
         text="Profile",
         image=profile_icon,
         compound="left",
-        # dashboard backend
-        command = lambda: gotoProfile(barFrame, mainFrame)
+        command=lambda: gotoProfile(mainFrame, headerFrame)  # ✅ pass headerFrame
     )
     pGoTo_Profile.pack(side="top", padx=25, pady=(25, 0))
 
