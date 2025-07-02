@@ -2,83 +2,39 @@
 import customtkinter as ctk
 
 from FrontEnd.Dashboard.DashboardMenu_Interface import load_dashboardMenu
-from FrontEnd.Dashboard.DashboardProfile_Interface import load_dashboardProfile
 
-#has packing and unpacking issues
+# --------------------------------------------------------- #
+# backend for menubar | Dashboard_Interface.py
+# --------------------------------------------------------- #
 def show_menu(
-        leftFrame, leftBtn,
-        centerFrame,
-        rightFrame, rightBtn
+        auth_callback,
+        container, barFrame, mainFrame, 
+        menuBtn
     ):
 
     # If menu is visible, hide it and show the button
-    if leftFrame.winfo_ismapped():
-        leftFrame.pack_forget()
-        leftBtn.pack(side="left", anchor="nw", pady=25, padx=25)
+    if barFrame.winfo_ismapped():
+        barFrame.pack_forget()
+        menuBtn.pack(side="left", anchor="nw", pady=25, padx=25)
     else:
-        # If profile is currently visible, hide it first
-        if rightFrame.winfo_ismapped():
-            rightFrame.pack_forget()
-            rightBtn.pack(side="right", anchor="ne", pady=25, padx=25)
+        menuBtn.pack_forget()
 
-        leftBtn.pack_forget()
-
-        # Load menu contents only once
-        if not hasattr(leftFrame, "loaded") or not leftFrame.loaded:
+        # Load menu bar contents only once
+        if not hasattr(barFrame, "loaded") or not barFrame.loaded:
             load_dashboardMenu(
-                leftFrame,
-                leftBtn,
+                auth_callback,
+                container, barFrame, mainFrame,
                 lambda: show_menu(
-                    leftFrame, leftBtn,
-                    centerFrame,
-                    rightFrame, rightBtn
+                    auth_callback,
+                    container, barFrame, mainFrame, 
+                    menuBtn
                 )
             )
-            leftFrame.loaded = True
+            barFrame.loaded = True
 
-        # Re-pack in correct order: left → center → right (if applicable)
-        leftFrame.pack(side="left", anchor="nw", fill="y")
-        centerFrame.pack_forget()
-        centerFrame.pack(side="right", fill="both", expand=True)
-        rightFrame.pack_forget()
+        # Repacking
+        barFrame.pack_forget()
+        mainFrame.pack_forget()
 
-# --------------------------------------------------------- #
-# queries for profile menu | .py
-# --------------------------------------------------------- #
-def show_ProfileMenu(
-        leftFrame, leftBtn,
-        centerFrame,
-        rightFrame, rightBtn,
-        auth_callback, container,
-        mainFrameHolder
-    ):
-
-    if rightFrame.winfo_ismapped():
-        rightFrame.pack_forget()
-        rightBtn.pack(side="right", anchor="ne", pady=25, padx=25)
-    else:
-        # Hide menu if open
-        if leftFrame.winfo_ismapped():
-            leftFrame.pack_forget()
-            leftBtn.pack(side="left", anchor="nw", pady=25, padx=25)
-
-        rightBtn.pack_forget()
-
-        if not hasattr(rightFrame, "loaded") or not rightFrame.loaded:
-            load_dashboardProfile(
-                rightFrame, rightBtn,
-                lambda: show_ProfileMenu(
-                    leftFrame, leftBtn,
-                    centerFrame,
-                    rightFrame, rightBtn,
-                    auth_callback, container,
-                    mainFrameHolder
-                ),
-                auth_callback, container,
-                leftFrame, centerFrame,
-                mainFrameHolder
-            )
-            rightFrame.loaded = True
-
-        centerFrame.pack(side="left", fill="both", expand=True)
-        rightFrame.pack(side="left", anchor="ne", fill="y")
+        barFrame.pack(side="left", anchor="nw", fill="y")
+        mainFrame.pack(side="left", fill="both", expand=True)

@@ -529,14 +529,8 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
 # --------------------------------------------------------------------------------------- #
 def show_tcf():
     submitTicketWindow = ctk.CTkToplevel()
-    #submitTicketWindow.geometry("500x150")
     submitTicketWindow.title("Submit a Ticket")
     submitTicketWindow.grab_set()
-
-    #icon not working i DO NOT KNOW WHY
-    #icon = get_ITicketIcon(submitTicketWindow)
-    #submitTicketWindow.iconphoto(False, icon)  # Set the icon
-    #submitTicketWindow._icon_photo = icon 
 
     #reused the gradient bg
     gradientFrame = create_gradient_frame(submitTicketWindow)

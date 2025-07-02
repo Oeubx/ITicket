@@ -32,7 +32,5 @@ authValue = defaultValue
 
 load_auth(main_container_frame, authValue, previous_frame=None)
 
-#tests
-
 ITicket.mainloop()
 #
