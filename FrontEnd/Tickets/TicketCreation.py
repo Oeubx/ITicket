@@ -9,10 +9,16 @@ from BackEnd.ReadfromFile import get_loggedIn_UsersId
 def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successLabel):
     buttonFrame.pack_forget()
 
-    mainFrame = ctk.CTkFrame(frame)
-    mainFrame.pack(side="top", fill="both", expand=True, padx=25, pady=25)
+    mainFrame = ctk.CTkFrame(
+        frame,
+        fg_color="#d2fdff"
+        )
+    mainFrame.pack(side="top", anchor="n", fill="x", expand=True, padx=25, pady=25)
 
-    headerFrame = ctk.CTkFrame(mainFrame)
+    headerFrame = ctk.CTkFrame(
+        mainFrame,
+        fg_color="#e9feff"
+        )
     headerFrame.pack(side="top", anchor="n", fill="x", padx=25, pady=25)
 
     ###
@@ -21,26 +27,37 @@ def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successL
     submitterUsername = get_userName(userId)
     submitterName = ctk.CTkLabel(
         headerFrame,
-        text=f"{submitterUsername}"
+        text=f"{submitterUsername}",
+        text_color="#2b4c59"
     )
     submitterName.pack(side="left", padx=15, pady=15)
 
     level_names = ["Inquiry", "Non-Urgent", "Urgent"]
     ticketLevel = ctk.CTkOptionMenu(
-        headerFrame,
-        values=level_names
+        master=headerFrame,
+        values=level_names,
+        fg_color="#00c2cb",
+        bg_color="#e9feff",
+        text_color="#ffffff",
+        dropdown_fg_color="#ffffff",
+        dropdown_text_color="#1f3b4d",
+        dropdown_hover_color="#d2fdff"
     )
     ticketLevel.pack(side="right", padx=15, pady=15)
     ticketLevel.set(level_names[level])
 
     ticketContentsFrame = ctk.CTkFrame(
-        mainFrame
+        mainFrame,
+        fg_color="#e9feff"
     )
     ticketContentsFrame.pack(side="top", fill="x", padx=25)
 
     ticketTitleEntry = ctk.CTkEntry(
         ticketContentsFrame,
         placeholder_text="Type Ticket Title Here",
+        fg_color="#e9feff",
+        placeholder_text_color="#000000",
+        text_color="#000000",
         width=250
     )
     ticketTitleEntry.pack(side="top", anchor="nw", padx=25, pady=(25,0))
@@ -135,6 +152,12 @@ def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successL
     category_dropdown = ctk.CTkOptionMenu(
         ticketContentsFrame,
         values=categories,
+        fg_color="#00c2cb",
+        bg_color="#e9feff",
+        text_color="#ffffff",
+        dropdown_fg_color="#ffffff",
+        dropdown_text_color="#1f3b4d",
+        dropdown_hover_color="#d2fdff",
         command=lambda cat: update_problems(
             cat, problems_frame, selected_problem, category_to_problems
             )
@@ -145,7 +168,10 @@ def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successL
     else :
         category_dropdown.set(categories[0])
 
-    problems_frame = ctk.CTkFrame(ticketContentsFrame)
+    problems_frame = ctk.CTkFrame(
+        ticketContentsFrame,
+        fg_color="#e9feff"
+        )
     problems_frame.pack(side="top", fill="both", expand=True, padx=25)
 
     update_problems(
@@ -155,32 +181,46 @@ def load_TicketCreation(toplevelWindow, frame, level: int, buttonFrame, successL
     ticketSubDescription = ctk.CTkEntry(
         ticketContentsFrame,
         #can be empty because of the options
-        placeholder_text="Describe the issue here"
+        placeholder_text="Describe the issue here or select one from the provided choices above",
+        fg_color="#e9feff",
+        placeholder_text_color="#000000",
+        text_color="#000000"
         )
     ticketSubDescription.pack(side="top", anchor="w", fill="x", padx=25, pady=25)
 
     errorLabel1 = ctk.CTkLabel(
         ticketContentsFrame,
-        text="Please choose from any of the options above if applicable or describe the issue.",
+        text="Please choose from any of the options above if applicable or describe the issue to proceed with ticket submission",
+        fg_color="#e9feff",
         text_color="#FF0000"
         )
     errorLabel1.pack_forget()
 
     buttonsFrame = ctk.CTkFrame(
-        mainFrame
+        mainFrame,
+        fg_color="#e9feff"
     )
     buttonsFrame.pack(side="top", anchor="e", padx=25, pady=25)
 
-    cancelTicketSubmissionBtn = ctk.CTkButton(buttonsFrame)
+    cancelTicketSubmissionBtn = ctk.CTkButton(
+        buttonsFrame,
+        fg_color="#00c2cb",
+        text_color="#ffffff"
+        )
     cancelTicketSubmissionBtn.pack(side="left", anchor="e", padx=25, pady=25)
 
-    submitTicketBtn = ctk.CTkButton(buttonsFrame)
+    submitTicketBtn = ctk.CTkButton(
+        buttonsFrame,
+        fg_color="#00c2cb",
+        text_color="#000000"
+        )
     submitTicketBtn.pack(side="left", anchor="e", padx=25, pady=25)
 
     errorLabel2 = ctk.CTkLabel(
         buttonsFrame,
         text="Error Ticket Submission",
-        text_color="#FF0000"
+        text_color="#FF0000",
+        fg_color="#e9feff"
         )
     errorLabel2.pack_forget()
 

@@ -4,9 +4,6 @@ import customtkinter as ctk
 from BackEnd.SQLiteQueries.TicketQueries import createTicket
 from BackEnd.ReadfromFile import get_loggedIn_UsersId
 
-from BackEnd.SQLite_Calls import SQLiteCall
-dbConn, pointer = SQLiteCall()
-
 def update_problems(category, problems_frame, selected_problem, category_to_problems):
     for widget in problems_frame.winfo_children():
         widget.destroy()
@@ -16,7 +13,10 @@ def update_problems(category, problems_frame, selected_problem, category_to_prob
             problems_frame,
             text=problem,
             variable=selected_problem,
-            value=problem
+            value=problem,
+            fg_color="#00c2cb",         # matches dropdown
+            text_color="#000000",       # readable on cyan
+            hover_color="#00a0a8"       # optional hover effect
         )
         rb.pack(side="top", anchor="w", padx=10, pady=5)
 

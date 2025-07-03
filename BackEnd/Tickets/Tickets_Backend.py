@@ -8,7 +8,7 @@ from FrontEnd.Tickets.TicketCreation import load_TicketCreation
 
 from BackEnd.Tickets.UpdateTicketHistory_Backend import updateTicketHistory
 from BackEnd.SQLiteQueries.TicketQueries import * # usage of * since too many was called/used
-from BackEnd.SQLiteQueries.LoggedInAcc_Queries import get_userEmpType
+from BackEnd.ReadfromFile import get_userEmpType
 from BackEnd.ReadfromFile import get_loggedIn_UsersId
 
 # global variable
@@ -56,19 +56,28 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
         #creation of widget for every tickets
         tContentFrame = ctk.CTkFrame(
             scrollableFrame,
-            fg_color="#dbe1e3"
+            fg_color="#d2fdff"
         )
         tContentFrame.pack(side="top", fill="x", expand=True, padx=(0,15), pady=15)
 
         #left frame | right frame
-        ticket_LeftFrame = ctk.CTkFrame(tContentFrame)
+        ticket_LeftFrame = ctk.CTkFrame(
+            tContentFrame,
+            fg_color="#d2fdff"
+            )
         ticket_LeftFrame.pack(side="left", anchor="w", padx=25, pady=25)
 
-        ticket_frame = ctk.CTkFrame(tContentFrame)
+        ticket_frame = ctk.CTkFrame(
+            tContentFrame,
+            fg_color="#d2fdff"
+            )
         ticket_frame.pack(side="right", anchor="e", padx=25, pady=25)
 
         #contents of left header frame
-        ticket_headerFrame = ctk.CTkFrame(ticket_LeftFrame)
+        ticket_headerFrame = ctk.CTkFrame(
+            ticket_LeftFrame,
+            fg_color="#d2fdff"
+            )
         ticket_headerFrame.pack(side="top", anchor="w")
 
         #query to get ticket submitters username | submitted by is an ID
@@ -77,31 +86,38 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
         ticketSubmitter = ctk.CTkLabel(
             ticket_headerFrame,
             text=f"{submitterName} | ",
-            font=("Arial", 16, "bold")
+            font=("Arial", 16, "bold"),
+            text_color="#000000"
         )
         ticketSubmitter.pack(side="left", anchor="nw")
 
         ticketTitle = ctk.CTkLabel(
             ticket_headerFrame,
             text=f"{title} | ",
-            font=("Arial", 16, "bold")
+            font=("Arial", 16, "bold"),
+            text_color="#000000"
         )
         ticketTitle.pack(side="left", anchor="nw")
 
         ticketLevel = ctk.CTkLabel(
             ticket_headerFrame,
             text=f"{level}",
-            font=("Arial", 16, "bold")
+            font=("Arial", 16, "bold"),
+            text_color="#000000"
         )
         ticketLevel.pack(side="left", anchor="nw")
 
         ##sub frame
-        ticket_subFrame = ctk.CTkFrame(ticket_LeftFrame)
+        ticket_subFrame = ctk.CTkFrame(
+            ticket_LeftFrame,
+            fg_color="#d2fdff"
+            )
         ticket_subFrame.pack(side="top", anchor="w")
 
         ticketDate = ctk.CTkLabel(
             ticket_subFrame,
-            text=f"Created at {created_at} | "
+            text=f"Created at {created_at} | ",
+            text_color="#000000"
         )
         ticketDate.pack(side="left")
 
@@ -110,20 +126,25 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
 
         ticketHandler = ctk.CTkLabel(
             ticket_subFrame,
-            text=f"{latestHandler}"
+            text=f"{latestHandler}",
+            text_color="#000000"
         )
         ticketHandler.pack(side="left")
 
         #contents of right frame
         ticketStatus = ctk.CTkLabel(
             ticket_frame,
-            text=f"{status}"
+            text=f"{status}",
+            text_color="#000000",
+            fg_color="#d2fdff"
             )
         ticketStatus.pack(side="top", pady=5)
 
         ticketRemarks = ctk.CTkButton(
             ticket_frame,
-            text = "Open Ticket",
+            text = "View Ticket",
+            text_color="#000000",
+            fg_color="#00c2cb",
             command=lambda tid=id: showFullTicket(divider, rFrame, tid)
         )
         ticketRemarks.pack(side="top")
@@ -165,7 +186,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
             widget.destroy()
         # Reset previous button label
         if current_displayed_ticket_id in all_ticket_buttons:
-            all_ticket_buttons[current_displayed_ticket_id].configure(text="See Ticket")
+            all_ticket_buttons[current_displayed_ticket_id].configure(text="View Ticket")
 
     current_displayed_ticket_id = ticketId
     clicked_btn.configure(text="Close Ticket")
@@ -179,35 +200,51 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     for widget in frame.winfo_children():
         widget.destroy()
 
-    divider.pack(side="left", fill="y", padx=10, pady=10)
+    divider.pack(side="left", fill="y")
     frame.pack(side="left", fill="both", expand=True)
 
     # 
-    fullticketFrame = ctk.CTkFrame(frame, fg_color="#ffffff")
+    fullticketFrame = ctk.CTkFrame(
+        frame, 
+        fg_color="#d2fdff"
+        )
     fullticketFrame.pack(fill="both", expand=True)
 
     #query to get ticket submitters username | submitted by is an ID
     submitterName = get_TicketSubmitterName(submitted_by)
 
+    submitterHeaderFrame = ctk.CTkFrame(
+        fullticketFrame,
+        fg_color="#d2fdff"
+    )
+    submitterHeaderFrame.pack(side="top", anchor="nw", fill="x", padx=25, pady=(25, 5))
+
+    ticketSubmitterText = ctk.CTkLabel(
+            submitterHeaderFrame,
+            text="Ticket By : ",
+            text_color="#000000"
+        )
+    ticketSubmitterText.pack(side="left")
+
     ticketSubmitter = ctk.CTkLabel(
-            fullticketFrame,
+            submitterHeaderFrame,
             text=f"{submitterName}",
             font=("Arial", 16, "bold"),
             text_color="#000000"
         )
-    ticketSubmitter.pack(side="top", anchor="nw", padx=25, pady=(25, 5))
+    ticketSubmitter.pack(side="left")
 
     headerFrame = ctk.CTkFrame(
         fullticketFrame,
-        fg_color="#ffffff"
+        fg_color="#d2fdff"
         )
     headerFrame.pack(side="top", anchor="w", fill="x", padx=25, pady=(5, 25))
 
     #headerframe lul
     tHandlerText = ctk.CTkLabel(
         headerFrame,
-        text="Ticket Handler: ",
-        text_color="#5e4b45"
+        text="Ticket Handler : ",
+        text_color="#000000"
         )
     tHandlerText.pack(side="left")
 
@@ -218,15 +255,15 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     tHandlerName = ctk.CTkLabel(
         headerFrame,
         text=f"{handlerName}",
-        text_color="#5e4b45",
-        font=("Arial", 15, "bold")
+        text_color="#000000",
+        font=("Arial", 15)
         )
     tHandlerName.pack(side="left")
 
     tStatus_Msg = ctk.CTkLabel(
         headerFrame,
         text=status,
-        text_color="#5e4b45",
+        text_color="#000000",
         font=("Arial", 15, "bold")
         )
     tStatus_Msg.pack(side="right")
@@ -234,7 +271,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     tStatus_Level = ctk.CTkLabel(
         headerFrame,
         text=f"{level} | ",
-        text_color="#5e4b45",
+        text_color="#000000",
         font=("Arial", 15, "bold")
         )
     tStatus_Level.pack(side="right")
@@ -242,20 +279,23 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     tStatusText = ctk.CTkLabel(
         headerFrame,
         text="Status: ",
-        text_color="#5e4b45"
+        text_color="#000000"
         )
     tStatusText.pack(side="right")
 
+    # title
     titleText = ctk.CTkLabel(
         fullticketFrame,
         text=title,
-        text_color="#5e4b45"
+        text_color="#000000",
+        font=("Arial", 15, "bold")
         )
     titleText.pack(side="top", anchor="w", padx=25, pady=(0, 10))
 
+    # 
     bodyFrame = ctk.CTkFrame(
         fullticketFrame,
-        fg_color="#a6a6a6"
+        fg_color="#e9feff",
         )
     bodyFrame.pack(side="top", anchor="w", fill="x", padx=25, pady=(0, 15))
 
@@ -285,9 +325,10 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
             handler, updateDesc = row
 
             th_Frame = ctk.CTkFrame(
-                bodyFrame
+                bodyFrame,
+                fg_color="#e9feff",
                 )
-            th_Frame.pack(side="top", anchor="w", padx=25, pady=10)
+            th_Frame.pack(side="top", anchor="w", padx=15, pady=10)
             th_Frame.pack_propagate(True)  # allows the frame to size to its content
 
             #query to get ticket submitters username
@@ -302,7 +343,8 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
                 th_innerFrame,
                 text=f"{handlerName} :",
                 anchor="w",
-                justify="left"
+                justify="left",
+                text_color="#000000"
             )
             th_ticketHandler.pack(anchor="w", pady=2)
 
@@ -311,7 +353,8 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
                 th_innerFrame,
                 text=f"{updateDesc}",
                 anchor="w",
-                justify="left"
+                justify="left",
+                text_color="#000000"
             )
             th_updateDesc.pack(anchor="w", pady=2)
 
@@ -323,31 +366,46 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         text="<Remarks>",
         text_color="#5e4b45"
         )
-    remarksFrame = ctk.CTkFrame(fullticketFrame, fg_color="#a6a6a6")
+    
+    remarksFrame = ctk.CTkFrame(
+        fullticketFrame,
+        fg_color="#e9feff",
+        )
 
     remarkEntry = ctk.CTkEntry(
         remarksFrame,
         placeholder_text="Ticket Update Description",
-        placeholder_text_color="#000000"
+        fg_color="#e9feff",
+        placeholder_text_color="#000000",
+        text_color="#000000"
         )
     remarkEntry.pack(side="left", fill="x", expand=True, padx=(25, 10), pady=15)
 
     uploadRemarkBtn = ctk.CTkButton(
         remarksFrame,
-        text="Update Ticket"
+        text="Update Ticket",
+        fg_color="#00c2cb",
+        text_color="#000000"
         )
     uploadRemarkBtn.pack(side="right", padx=(10, 25), pady=15)
 
     # buttons
-    buttonsFrame = ctk.CTkFrame(fullticketFrame, fg_color="#a6a6a6")
+    buttonsFrame = ctk.CTkFrame(
+        fullticketFrame,
+        fg_color="#e9feff"
+        )
 
     closeStatus_Btn = ctk.CTkButton(
         buttonsFrame,
-        text="Close"
+        text="Close",
+        fg_color="#00c2cb",
+        text_color="#000000"
         )
     openStatus_Btn = ctk.CTkButton(
         buttonsFrame,
-        text="Open"
+        text="Open",
+        fg_color="#00c2cb",
+        text_color="#000000"
         )
     #packs these two after checking status
     
@@ -393,11 +451,11 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         remarksText.pack(side="top", anchor="w", padx=25, pady=(0, 10))
         remarksFrame.pack(side="top", anchor="w", fill="x", padx=25)
 
-        buttonsFrame.pack(side="top", anchor="se", fill="x", padx=25, pady=25)
+        buttonsFrame.pack(side="top", anchor="se", padx=50, pady=25)
         if status == "Open":
-            closeStatus_Btn.pack(side="right", padx=25)
+            closeStatus_Btn.pack(side="right")
         elif status == "Close":
-            openStatus_Btn.pack(side="right", padx=25)
+            openStatus_Btn.pack(side="right")
 
 # --------------------------------------------------------- #
 # 
@@ -425,17 +483,23 @@ def show_tcf():
     )
     contentsHolder_Frame.pack(fill="both", expand=True, anchor="center", padx=25, pady=25)
 
-    buttonFrame = ctk.CTkFrame(contentsHolder_Frame)
+    buttonFrame = ctk.CTkFrame(
+        contentsHolder_Frame,
+        fg_color="#e0fdff"
+        )
     buttonFrame.pack(side="top", padx=25, pady=25)
 
-    labelFrame = ctk.CTkFrame(contentsHolder_Frame)
+    labelFrame = ctk.CTkFrame(
+        contentsHolder_Frame,
+        fg_color="#e0fdff"
+        )
     labelFrame.pack(side="top", padx=25, pady=25)
     labelFrame.pack_forget()
 
     successTicketSubmission = ctk.CTkLabel(
         labelFrame,
         text="Ticket Submitted. You can close this window now",
-        text_color="green"
+        text_color="#2b4c59"
     )
     successTicketSubmission.pack(side="top", padx=25, pady=25)
 
@@ -443,6 +507,8 @@ def show_tcf():
     tcfInquireBtn = ctk.CTkButton(
         buttonFrame,
         text="Inquiry",
+        fg_color="#00c2cb",
+        text_color="#ffffff",
         command = lambda: load_TicketCreation(
             submitTicketWindow, contentsHolder_Frame, 0, buttonFrame, labelFrame
             )
@@ -452,6 +518,8 @@ def show_tcf():
     tcfNonUrgentBtn = ctk.CTkButton(
         buttonFrame,
         text="Non Urgent",
+        fg_color="#00c2cb",
+        text_color="#ffffff",
         command = lambda: load_TicketCreation(
             submitTicketWindow, contentsHolder_Frame, 1, buttonFrame, labelFrame
             )
@@ -461,6 +529,8 @@ def show_tcf():
     tcfUrgentBtn = ctk.CTkButton(
         buttonFrame,
         text="Urgent",
+        fg_color="#00c2cb",
+        text_color="#ffffff",
         command = lambda: load_TicketCreation(
             submitTicketWindow, contentsHolder_Frame, 2, buttonFrame, labelFrame
             )

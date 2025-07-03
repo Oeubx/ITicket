@@ -56,7 +56,7 @@ def load_signuppage(container, authValue, auth_callback):
     #signupContainer Frame
     suContainerFrame = ctk.CTkFrame(
         container,
-        corner_radius=0,
+        corner_radius=15,
         fg_color="#ffffff"
         )
     suContainerFrame.pack(anchor="center", expand=True, pady=(0,50))

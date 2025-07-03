@@ -50,7 +50,7 @@ def load_forgotpwpage(container, authValue, auth_callback):
     #forgot password Container Frame
     fpContainerFrame = ctk.CTkFrame(
         container,
-        corner_radius=0,
+        corner_radius=15,
         fg_color="#ffffff"
         )
     fpContainerFrame.pack(anchor="center", expand=True, pady=(0,50))

@@ -41,20 +41,3 @@ def fetch_user_type(id):
     # passed the type only
     # ( type, <null>)
     return acc_details[0]
-
-def get_userEmpType():
-    with open(filePointer, "r") as file:
-        lines = file.readlines()
-
-    emp_Id = lines[1].strip() #gets the first index (2nd item which is emp_Id)
-
-    getLogged_acc_details = """
-        SELECT employee_type
-        FROM Employee
-        WHERE employee_Id = ?
-    """
-
-    pointer.execute(getLogged_acc_details, (emp_Id,))
-    user_type = pointer.fetchone()
-    
-    return int(user_type[0])

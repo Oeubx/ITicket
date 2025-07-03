@@ -47,10 +47,10 @@ def load_loginpage(container, authValue, auth_callback):
     #loginContainer Frame
     lContainerFrame = ctk.CTkFrame(
         container,
-        corner_radius=0,
+        corner_radius=15,
         fg_color="#ffffff"
         )
-    lContainerFrame.pack(anchor="center", expand=True, pady=(0,50))
+    lContainerFrame.pack(expand=True, pady=(0,50))
 
     Login_Text = ctk.CTkLabel(
         lContainerFrame,

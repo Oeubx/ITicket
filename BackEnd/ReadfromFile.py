@@ -2,10 +2,7 @@
 # new file | mainly will hold logic for reading file contents 
 
 import os
-from BackEnd.SQLiteQueries.GeneralQueries import SQLiteCall
 from BackEnd.SQLiteQueries.LoggedInAcc_Queries import *
-
-dbConn, pointer = SQLiteCall()
 
 # file stuffs
 project_folder = os.path.dirname(os.path.abspath(__file__))
@@ -82,6 +79,6 @@ def get_userEmpType():
     #gets the first index (2nd item which is emp_Id)
     emp_Id = lines[1].strip() 
 
-    user_type = fetch_user_id(emp_Id)
+    user_type = fetch_user_type(emp_Id)
     
     return int(user_type)
