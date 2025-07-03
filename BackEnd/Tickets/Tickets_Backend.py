@@ -51,7 +51,7 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
     #start of loop
     for row in ticket_ContentsHolder:
         #saves each of the contents in these variables
-        id, title, status, level, created_at, submitted_by = row
+        id, title, status, level, created_at, submitterName = row
 
         #creation of widget for every tickets
         tContentFrame = ctk.CTkFrame(
@@ -79,9 +79,6 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
             fg_color="#d2fdff"
             )
         ticket_headerFrame.pack(side="top", anchor="w")
-
-        #query to get ticket submitters username | submitted by is an ID
-        submitterName = get_TicketSubmitterName(submitted_by)
 
         ticketSubmitter = ctk.CTkLabel(
             ticket_headerFrame,
@@ -122,6 +119,7 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
         ticketDate.pack(side="left")
 
         # query
+        # no need join query here
         latestHandler = get_LatestHandler(id)
 
         ticketHandler = ctk.CTkLabel(
@@ -192,9 +190,9 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     clicked_btn.configure(text="Close Ticket")
 
     # query for ticket
-    ticketDetailsHolder = get_TicketDetails(ticketId)
+    ticketDetailsHolder = get_FullTicketDetails(ticketId)
     # get from ^ saves it here v
-    id, title, desc, status, level, submitted_by = ticketDetailsHolder
+    id, title, desc, status, level, submitterName = ticketDetailsHolder
 
     # remove previous content
     for widget in frame.winfo_children():
@@ -209,9 +207,6 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         fg_color="#d2fdff"
         )
     fullticketFrame.pack(fill="both", expand=True)
-
-    #query to get ticket submitters username | submitted by is an ID
-    submitterName = get_TicketSubmitterName(submitted_by)
 
     submitterHeaderFrame = ctk.CTkFrame(
         fullticketFrame,
@@ -249,12 +244,12 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     tHandlerText.pack(side="left")
 
     # query
-    latestHandler = get_LatestHandler(id)
-    handlerName = get_TicketHandlers_Name(latestHandler)
+    latestHandler = get_LatestHandler(ticketId)
+    #handlerName = get_TicketHandlers_Name(latestHandler)
 
     tHandlerName = ctk.CTkLabel(
         headerFrame,
-        text=f"{handlerName}",
+        text=f"{latestHandler}",
         text_color="#000000",
         font=("Arial", 15)
         )
@@ -415,7 +410,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     
     uploadRemarkBtn.configure(
         command = lambda: updateTicketHistory( # first three of what i need for db
-            id, remarkEntry, 2,
+            id, remarkEntry, get_loggedIn_UsersId(),
             #id, remarkEntry.get().strip(), getUserID(),
             "Update",   # the rest of what i need for widget updates
             tHandlerName, tStatus_Msg,
@@ -445,9 +440,9 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     )
 
     # query from logged in acc _ queries .py
-    loggedUserId = get_userEmpType()
+    loggedUserType = get_userEmpType()
 
-    if loggedUserId == 0:
+    if loggedUserType == 0:
         remarksText.pack_forget()
         remarksFrame.pack_forget()
         buttonsFrame.pack_forget()

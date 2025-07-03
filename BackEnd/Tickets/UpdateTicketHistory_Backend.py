@@ -31,7 +31,7 @@ def showTicketReopenWindow(status, defaultStatus):
 
     reopenLabel = ctk.CTkLabel(
         labelFrame,
-        text=f"Ticket is {status}. Would you like to continue {changeStatusLabel} this ticket?",
+        text=f"Ticket is currently '{status}'. Would you like to continue {changeStatusLabel} this ticket?",
         text_color="green",
         wraplength=400  # helps prevent long lines from overflowing
     )
@@ -40,7 +40,11 @@ def showTicketReopenWindow(status, defaultStatus):
     statusTextVar = ctk.StringVar(value=defaultStatus)
     statusEntryDesc = ctk.CTkEntry(
         container,
-        textvariable=statusTextVar
+        textvariable=statusTextVar,
+        fg_color="#e9feff",
+        placeholder_text_color="#000000",
+        text_color="#000000",
+        width=250
     )
     statusEntryDesc.pack(padx=15, pady=10)
 
@@ -80,13 +84,11 @@ def renderFullTicket(bodyFrame, ticketId):
         widget.destroy()
 
     # query for ticket
-    ticketDetailsHolder = get_TicketDetails(ticketId)
-    # get from ^ saves it here v
-    id, title, desc, status, level, submitted_by = ticketDetailsHolder
+    ticketDetails = get_TicketDescription(ticketId)
 
     tDesc = ctk.CTkLabel(
         bodyFrame,
-        text=desc,
+        text=ticketDetails,
         anchor="nw",
         justify="left",   
         text_color="#000000"
@@ -98,7 +100,7 @@ def renderFullTicket(bodyFrame, ticketId):
     # -------------------------------------------------------------------------------- #
 
     # query for this ticket's history
-    ticketHistoryDetailsHolder = get_ThisTicketsHistory(id)
+    ticketHistoryDetailsHolder = get_ThisTicketsHistory(ticketId)
 
     # if it has contents
     if ticketHistoryDetailsHolder:
@@ -161,6 +163,7 @@ def updateTicketHistory(
         ):
     # to be used for opening and closing of ticket
     updateDescription = ""
+    ticketUpdated = False
     
     if stringStatus == "Update":
         updateDescription = remarkEntryWidget.get().strip()
@@ -168,49 +171,50 @@ def updateTicketHistory(
         update_thisTicket(ticketId, handlerId, updateDescription)
 
         remarkEntryWidget.delete(0, "end")
-        #
+        ticketUpdated = True
     elif stringStatus == "Open":
         updateDescription = "Re-open this Ticket"
         confirmTicketStatus, updateDescription = showTicketReopenWindow(stringStatus, updateDescription)
 
         if confirmTicketStatus:
             update_thisTicket(ticketId, handlerId, updateDescription)
-            update_thisTicketsStatus(stringStatus, ticketId)
-        #
+            update_thisTicketsStatus("Open", ticketId)
+            ticketUpdated = True
     elif stringStatus == "Close":
         updateDescription = "Close this ticket"
         confirmTicketStatus, updateDescription = showTicketReopenWindow(stringStatus, updateDescription)
 
         if confirmTicketStatus:
             update_thisTicket(ticketId, handlerId, updateDescription)
-            update_thisTicketsStatus(stringStatus, ticketId)
-        #
-            
-    #query to get ticket submitters username
-    handlerName = get_TicketHandlers_Name(handlerId)
+            update_thisTicketsStatus("Closed", ticketId)
+            ticketUpdated = True
 
-    if handlerName:
-        handlerWidget.configure(text=handlerName)
-    else:
-        handlerWidget.configure(text="No handler yet")
-    
-    if stringStatus == "Open" or stringStatus == "Update":
-        statusWidget.configure(text="Open")
-    elif stringStatus == "Close":
-        statusWidget.configure(text="Closed")
+    if ticketUpdated:      
+        #query to get ticket submitters username
+        handlerName = get_TicketHandlers_Name(handlerId)
 
-    renderFullTicket(historyFrame, ticketId)
+        if handlerName:
+            handlerWidget.configure(text=handlerName)
+        else:
+            handlerWidget.configure(text="No handler yet")
+        
+        if stringStatus == "Open" or stringStatus == "Update":
+            statusWidget.configure(text="Open")
+        elif stringStatus == "Close":
+            statusWidget.configure(text="Closed")
 
-    if stringStatus == "Close":
-        for widget in btnsFrame.winfo_children():
-            widget.pack_forget()
-        openBtn.pack(side="right")
+        renderFullTicket(historyFrame, ticketId)
 
-    elif stringStatus == "Open":
-        # show Close, hide Open
-        for widget in btnsFrame.winfo_children():
-            widget.pack_forget()
-        closeBtn.pack(side="right")
+        if stringStatus == "Close":
+            for widget in btnsFrame.winfo_children():
+                widget.pack_forget()
+            openBtn.pack(side="right")
+
+        elif stringStatus == "Open":
+            # show Close, hide Open
+            for widget in btnsFrame.winfo_children():
+                widget.pack_forget()
+            closeBtn.pack(side="right")
 
     # i need to refresh the ticket interface too
-    # why?
+    # why? | its hard bro
