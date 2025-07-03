@@ -25,9 +25,9 @@ def showTicketReopenWindow(status, defaultStatus):
     labelFrame.pack(padx=25, pady=15)
 
     if status == "Open":
-        changeStatusLabel = "opening"
-    elif status == "Close":
         changeStatusLabel = "closing"
+    elif status == "Close":
+        changeStatusLabel = "opening"
 
     reopenLabel = ctk.CTkLabel(
         labelFrame,
@@ -173,20 +173,20 @@ def updateTicketHistory(
         remarkEntryWidget.delete(0, "end")
         ticketUpdated = True
     elif stringStatus == "Open":
-        updateDescription = "Re-open this Ticket"
-        confirmTicketStatus, updateDescription = showTicketReopenWindow(stringStatus, updateDescription)
-
-        if confirmTicketStatus:
-            update_thisTicket(ticketId, handlerId, updateDescription)
-            update_thisTicketsStatus("Open", ticketId)
-            ticketUpdated = True
-    elif stringStatus == "Close":
-        updateDescription = "Close this ticket"
+        updateDescription = "Close this Ticket"
         confirmTicketStatus, updateDescription = showTicketReopenWindow(stringStatus, updateDescription)
 
         if confirmTicketStatus:
             update_thisTicket(ticketId, handlerId, updateDescription)
             update_thisTicketsStatus("Closed", ticketId)
+            ticketUpdated = True
+    elif stringStatus == "Close":
+        updateDescription = "Re-open this ticket"
+        confirmTicketStatus, updateDescription = showTicketReopenWindow(stringStatus, updateDescription)
+
+        if confirmTicketStatus:
+            update_thisTicket(ticketId, handlerId, updateDescription)
+            update_thisTicketsStatus("Open", ticketId)
             ticketUpdated = True
 
     if ticketUpdated:      

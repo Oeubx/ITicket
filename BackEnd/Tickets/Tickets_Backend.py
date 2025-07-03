@@ -422,7 +422,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     closeStatus_Btn.configure(
         command = lambda: updateTicketHistory( # first three of what i need for db
             id, remarkEntry.get().strip(), get_loggedIn_UsersId(),
-            "Close",   # the rest of what i need for widget updates
+            status,   # the rest of what i need for widget updates
             tHandlerName, tStatus_Msg,
             bodyFrame, buttonsFrame,
             closeStatus_Btn, openStatus_Btn
@@ -432,7 +432,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     openStatus_Btn.configure(
         command = lambda: updateTicketHistory( # first three of what i need for db
             id, remarkEntry.get().strip(), get_loggedIn_UsersId(),
-            "Open",   # the rest of what i need for widget updates
+            status,   # the rest of what i need for widget updates
             tHandlerName, tStatus_Msg,
             bodyFrame, buttonsFrame,
             closeStatus_Btn, openStatus_Btn

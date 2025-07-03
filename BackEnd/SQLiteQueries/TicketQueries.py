@@ -174,7 +174,7 @@ def get_ThisTicketsHistory(ticketId):
             ,update_Description
         FROM Ticket_History
         WHERE ticket_Id = ?
-        ORDER BY "update_" DESC
+        ORDER BY "update_Date" DESC
     """
     pointer.execute(selectTicketHistory, (ticketId,))
     ticketHistoryDetailsHolder = pointer.fetchall()
