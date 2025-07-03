@@ -175,7 +175,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         current_displayed_ticket_id = None
 
         # Reset the button text back to "See Ticket"
-        clicked_btn.configure(text="Open Ticket")
+        clicked_btn.configure(text="View Ticket")
         return
 
     # Close currently open ticket if another is clicked

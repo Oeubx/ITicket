@@ -70,84 +70,65 @@ def createTicket( title, desc, level, id ):
 def get_AllTickets(sortOrder):
     getAll_query = f"""
         SELECT 
-            ticket_Id
-            ,ticket_title
-            --skip ticket descrption
-            ,ticket_status
-            ,ticket_level
-            ,created_at
-            ,submitted_by
-        FROM Ticket
-        ORDER BY created_at {sortOrder}
+            T.ticket_Id,
+            T.ticket_title,
+            T.ticket_status,
+            T.ticket_level,
+            T.created_at,
+            E.employee_username
+        FROM Ticket T
+        INNER JOIN Employee E ON T.submitted_by = E.employee_Id
+        ORDER BY T.created_at {sortOrder}
     """
     pointer.execute(getAll_query)
-    allTickets = pointer.fetchall()
-
-    return allTickets
+    return pointer.fetchall()
 
 def get_MyTickets(userId, sortOrder):
     getMyTickets_query = f"""
         SELECT 
-            ticket_Id
-            ,ticket_title
-            --skip ticket descrption
-            ,ticket_status
-            ,ticket_level
-            ,created_at
-            ,submitted_by
-        FROM Ticket
-        WHERE submitted_by = {userId}
-        ORDER BY created_at {sortOrder}
+            T.ticket_Id,
+            T.ticket_title,
+            T.ticket_status,
+            T.ticket_level,
+            T.created_at,
+            E.employee_username
+        FROM Ticket T
+        INNER JOIN Employee E ON T.submitted_by = E.employee_Id
+        WHERE T.submitted_by = ?
+        ORDER BY T.created_at {sortOrder}
     """
-    pointer.execute(getMyTickets_query)
-    myTickets = pointer.fetchall()
-
-    return myTickets
+    pointer.execute(getMyTickets_query, (userId,))
+    return pointer.fetchall()
 
 def get_TicketByLevel(level, sortOrder):
     get_TicketByLevel_query = f"""
-        SELECT
-            ticket_Id
-            ,ticket_title
-            --skip ticket descrption
-            ,ticket_status
-            ,ticket_level
-            ,created_at
-            ,submitted_by
-        FROM Ticket
-        WHERE ticket_level = {level}
-        ORDER BY created_at {sortOrder}
+        SELECT 
+            T.ticket_Id,
+            T.ticket_title,
+            T.ticket_status,
+            T.ticket_level,
+            T.created_at,
+            E.employee_username
+        FROM Ticket T
+        INNER JOIN Employee E ON T.submitted_by = E.employee_Id
+        WHERE T.ticket_level = ?
+        ORDER BY T.created_at {sortOrder}
     """
-    pointer.execute(get_TicketByLevel_query)
-    sortedTickets = pointer.fetchall()
-
-    return sortedTickets
+    pointer.execute(get_TicketByLevel_query, (level,))
+    return pointer.fetchall()
 
 # is both used by functions
-# reloadTicket and | line 75
-# showFullTicket   | line 190
-def get_TicketSubmitterName(userId):
-    getSubmitterName_query = "SELECT employee_username FROM Employee WHERE employee_Id = ?"
-
-    pointer.execute(getSubmitterName_query, (userId, ))
-        
-    submitterNameResult = pointer.fetchone()
-    return submitterNameResult[0] if submitterNameResult else "Unkown Ticket Submitter | "
-
-# is both used by functions
-# reloadTicket and | line 109
+# reloadTicket and | line 122
 # showFullTicket   | line 215
 def get_LatestHandler(ticketId):
     latestHandlerQuery = """
-            SELECT ticket_Handler
-            FROM Ticket_History
-            WHERE ticket_Id = ?
-            ORDER BY "updatedAt" DESC
-            LIMIT 1
-        """
-    #DESCENDING takes the latest history and the handler,
-    # LIMIT 1 takes the first only
-
+        SELECT E.employee_username
+        FROM Ticket_History TH
+        INNER JOIN Employee E ON TH.ticket_Handler = E.employee_Id
+        WHERE TH.ticket_Id = ?
+        ORDER BY TH.update_Date DESC
+        LIMIT 1
+    """
     pointer.execute(latestHandlerQuery, (ticketId,))
     latestHandlerResult = pointer.fetchone()
 
@@ -156,23 +137,35 @@ def get_LatestHandler(ticketId):
 # --------------------------------------------------------- #
 # queries for full ticket showing | --.py
 # --------------------------------------------------------- #
-def get_TicketDetails(ticketId):
+def get_FullTicketDetails(ticketId):
     selectTicket = """
         SELECT
-            ticket_Id
-            ,ticket_title
-            ,ticket_desc
-            ,ticket_status
-            ,ticket_level
-            --skips created at
-            ,submitted_by
-        FROM Ticket
-        WHERE ticket_Id = ?
+            T.ticket_Id,
+            T.ticket_title,
+            T.ticket_desc,
+            T.ticket_status,
+            T.ticket_level,
+            E.employee_username
+        FROM Ticket T
+        INNER JOIN Employee E ON T.submitted_by = E.employee_Id
+        WHERE T.ticket_Id = ?
     """
     pointer.execute(selectTicket, (ticketId,))
     ticketDetailsHolder = pointer.fetchone()
 
     return ticketDetailsHolder
+
+# query for update ticket history backend line 82
+def get_TicketDescription(ticketId):
+    query = """
+        SELECT T.ticket_desc
+        FROM Ticket T
+        WHERE T.ticket_Id = ?
+    """
+    pointer.execute(query, (ticketId,))
+    result = pointer.fetchone()
+
+    return result[0] if result else "No Description Found"
 
 def get_ThisTicketsHistory(ticketId):
     selectTicketHistory = """
@@ -181,7 +174,7 @@ def get_ThisTicketsHistory(ticketId):
             ,update_Description
         FROM Ticket_History
         WHERE ticket_Id = ?
-        ORDER BY "updatedAt" ASC
+        ORDER BY "update_" DESC
     """
     pointer.execute(selectTicketHistory, (ticketId,))
     ticketHistoryDetailsHolder = pointer.fetchall()
