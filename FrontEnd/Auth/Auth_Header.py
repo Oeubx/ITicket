@@ -5,6 +5,8 @@ import customtkinter as ctk
 import os
 from PIL import Image
 
+from FrontEnd.AboutUs_Interface import load_AboutUs
+
 def get_iticketIcon(): #no refresh icon yet
     current_dir = os.path.dirname(__file__)
     icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "main logo.png")
@@ -45,7 +47,7 @@ def load_authHeader(container):
         text_color="#666666"
     )
     AboutUs.pack(side="right", anchor="n", padx=(0, 40), pady=(75, 0))  # ← was 30, added more right padding
-    #AboutUs.bind("<Button-1>", lambda event: auth_callback(container, 2, container))
+    AboutUs.bind("<Button-1>", lambda event: load_AboutUs())
 
     #text
     textFrame1 = ctk.CTkFrame(container, fg_color="transparent")
