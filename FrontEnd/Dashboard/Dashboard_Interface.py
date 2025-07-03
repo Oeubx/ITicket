@@ -9,6 +9,12 @@ from PIL import Image
 #module imports
 from FrontEnd.Tickets.Tickets_Interface import load_ticketsInterface
 from BackEnd.Dashboard.Dashboard_Backend import show_menu
+from BackEnd.SQLiteQueries.DashboardQueries import (
+    get_pending_ticket_count,
+    get_open_ticket_count,
+    get_closed_ticket_count,
+    get_list_of_avail_ITemployees
+)
 
 ###########################################################################
 #icons
@@ -21,21 +27,29 @@ def get_menuIcon():
     icon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
     return icon
 
-def get_profileIcon():
-    # Get the absolute path to the icon
+def get_backIcon():
     current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "profile.png")
-    # Load image and wrap it in CTkImage
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "arrow back.png")
 
-    icon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
-    return icon
+    backIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
+    return backIcon
+
+def get_forwardIcon():
+    current_dir = os.path.dirname(__file__)
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "arrow forward.png")
+
+    backIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
+    return backIcon
 
 # --------------------------------------------------------- #
 # functions for icons ^^^
 # --------------------------------------------------------- #
 def load_dashboard(container, authValue, auth_callback):
     menuIcon = get_menuIcon()
-    profileIcon = get_profileIcon()
+
+    tempPendingTicketsIcon = get_backIcon()
+    tempOpenTicketsIcon = get_backIcon()
+    tempClosedTicketsIcon = get_forwardIcon()
 
     dashboardMainFrame = ctk.CTkFrame(container)
     dashboardMainFrame.pack(fill="both", expand=True)
@@ -84,12 +98,124 @@ def load_dashboard(container, authValue, auth_callback):
     menuIconBtn.pack(side="left", anchor="nw", pady=25, padx=25)
 
     # Main content frame
-    contentFrame = ctk.CTkFrame(
+    contentFrame =  ctk.CTkScrollableFrame(
         mainFrame,
+        width=400,
+        height=400,
         fg_color= "#a5fbff",
-        bg_color= "#a5fbff"
+        scrollbar_fg_color="#b8f3fa",
+        scrollbar_button_color="#0097b2"
         )
     contentFrame.pack(side="top", fill="both", expand=True)
+
+    dashboardContentsFrame = ctk.CTkFrame(
+        contentFrame,
+        fg_color= "#a5fbff"
+    )
+    dashboardContentsFrame.pack(fill="both", expand=True, padx=25, pady=25)
+
+    row1 = ctk.CTkFrame(
+        dashboardContentsFrame
+    )
+    row1.pack(side="top", padx=25)
+
+    welcomeTextLabel1 = ctk.CTkLabel(
+        row1,
+        text="Welcome to ",
+        text_color="#000000",
+        font=("Arial", 50, "bold"),
+        bg_color= "#a5fbff",
+        height=60
+    )
+    welcomeTextLabel1.pack(side="left")
+
+    welcomeTextLabel2 = ctk.CTkLabel(
+        row1,
+        text="ITicket",
+        text_color="#6c6c6c",
+        font=("Arial", 50, "bold"), 
+        fg_color= "#a5fbff",
+        bg_color= "#a5fbff",
+        height=60
+    )
+    welcomeTextLabel2.pack(side="left")
+
+    # Container frame for ticket stats
+    row2 = ctk.CTkFrame(
+        dashboardContentsFrame,
+        fg_color="#a5fbff"
+    )
+    row2.pack(side="top", padx=25, pady=10)
+
+    pendingTickets_Count = get_pending_ticket_count()
+    openTickets_Count = get_open_ticket_count()
+    closedTickets_Count = get_closed_ticket_count()
+
+    pendingTickets = ctk.CTkLabel(
+        row2,
+        text=f"Pending Tickets : {pendingTickets_Count}",
+        image=tempPendingTicketsIcon,
+        compound="left",
+        text_color="#000000"
+    )
+    pendingTickets.pack(side="left", anchor="n", padx=(0,25))
+
+    openTickets = ctk.CTkLabel(
+        row2,
+        text=f"Open Tickets : {openTickets_Count}",
+        image=tempOpenTicketsIcon,
+        compound="left",
+        text_color="#000000"
+    )
+    openTickets.pack(side="left", anchor="n", padx=(0,25))
+
+    closedTickets = ctk.CTkLabel(
+        row2,
+        text=f"Closed Tickets : {closedTickets_Count}",
+        image=tempClosedTicketsIcon,
+        compound="left",
+        text_color="#000000"
+    )
+    closedTickets.pack(side="left", anchor="n", padx=(0,25))
+
+    avail_ITemployeesText = ctk.CTkLabel(
+        dashboardContentsFrame,
+        text="List of Available IT employees",
+        text_color="#000000"
+    )
+    avail_ITemployeesText.pack(side="top", pady=5)
+
+    row3 = ctk.CTkScrollableFrame(
+        dashboardContentsFrame,
+        corner_radius=18,
+        width=375,
+        height=125,
+        fg_color="#d2fdff",
+        bg_color="#d2fdff",
+        scrollbar_fg_color="#b8f3fa",
+        scrollbar_button_color="#0097b2"
+    )
+    row3.pack(side="top", anchor="center", padx=25, pady=10)
+
+    for widget in row3.winfo_children():
+        widget.destroy()
+
+    list_of_avail_ITs = get_list_of_avail_ITemployees()
+
+    if list_of_avail_ITs:
+        for row in list_of_avail_ITs:
+            ITname = ctk.CTkLabel(
+                row3,
+                text=row,
+                text_color="#000000"
+            )
+            ITname.pack(side="top", anchor="w", pady=(0,5))
+    else:
+        ITname = ctk.CTkLabel(
+            row3,
+            text="All IT Employees are currently handling a ticket"
+        )
+        ITname.pack(side="top", pady=(0,5))
 
     # pass this for contents
     dContentsFrame = ctk.CTkFrame(
@@ -99,4 +225,5 @@ def load_dashboard(container, authValue, auth_callback):
         )
     dContentsFrame.pack(fill="both", expand=True, padx=25, pady=25)
 
+    # ticketing system
     load_ticketsInterface(dContentsFrame)
