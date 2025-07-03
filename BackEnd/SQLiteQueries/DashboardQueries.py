@@ -62,3 +62,29 @@ def get_list_of_avail_ITemployees():
     result = pointer.fetchall()
 
     return result
+
+def get_topClosers():
+    # first query gets each employee's username and how many closed tickets they've handled
+        # joins Ticket_History to Ticket to access ticket status
+        # joins Employee to trace handler IDs back to usernames
+    # second condition filters only the tickets with status 'Closed'
+    # groups the results by employee_username and counts how many closed tickets each handled
+    # orders the list descending to put the highest count first
+    # limits the result to only the top employee (most closed tickets)
+
+    query = """
+        SELECT 
+            E.employee_username,
+            COUNT(*) AS closed_ticket_count
+        FROM Ticket_History TH
+        INNER JOIN Ticket T ON TH.ticket_Id = T.ticket_Id
+        INNER JOIN Employee E ON TH.ticket_Handler = E.employee_Id
+        WHERE T.ticket_status = 'Closed'
+        GROUP BY E.employee_username
+        ORDER BY closed_ticket_count DESC
+        LIMIT 1
+    """
+    pointer.execute(query)
+    result = pointer.fetchone()
+
+    return result[0] if result else "No records yet"

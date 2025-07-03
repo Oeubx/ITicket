@@ -453,7 +453,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         buttonsFrame.pack(side="top", anchor="se", padx=50, pady=25)
         if status == "Open":
             closeStatus_Btn.pack(side="right")
-        elif status == "Close":
+        elif status == "Closed":
             openStatus_Btn.pack(side="right")
 
 # --------------------------------------------------------- #

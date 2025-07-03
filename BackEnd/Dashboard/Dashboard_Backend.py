@@ -10,9 +10,9 @@ from BackEnd.SQLiteQueries.DashboardQueries import (
     get_pending_ticket_count,
     get_open_ticket_count,
     get_closed_ticket_count,
-    get_list_of_avail_ITemployees
+    get_list_of_avail_ITemployees,
+    get_topClosers
 )
-
 
 def get_backIcon():
     current_dir = os.path.dirname(__file__)
@@ -52,8 +52,15 @@ def show_menu(
         # Repack header
         headerFrame.pack(side="top", fill="x")
 
-        # Then recreate content area
-        contentFrame = ctk.CTkFrame(mainFrame, fg_color="#a5fbff")
+        # Main content frame
+        contentFrame =  ctk.CTkScrollableFrame(
+            mainFrame,
+            width=400,
+            height=400,
+            fg_color= "#a5fbff",
+            scrollbar_fg_color="#b8f3fa",
+            scrollbar_button_color="#0097b2"
+            )
         contentFrame.pack(side="top", fill="both", expand=True)
 
         dashboardContentsFrame = ctk.CTkFrame(
@@ -130,6 +137,23 @@ def show_menu(
         )
         closedTickets.pack(side="left", anchor="n", padx=(0,25))
 
+        row3 = ctk.CTkFrame(
+            dashboardContentsFrame,
+            fg_color="#a5fbff"
+        )
+        row3.pack(side="top", padx=25, pady=10)
+
+        closedTickets_Count = get_topClosers()
+
+        mostTicketsClosed = ctk.CTkLabel(
+            row3,
+            text=f"Employee with most tickets handled and closed : {closedTickets_Count}",
+            image=tempClosedTicketsIcon,
+            compound="left",
+            text_color="#000000"
+        )
+        mostTicketsClosed.pack(side="left", anchor="n", padx=(0,25))
+
         avail_ITemployeesText = ctk.CTkLabel(
             dashboardContentsFrame,
             text="List of Available IT employees",
@@ -137,7 +161,7 @@ def show_menu(
         )
         avail_ITemployeesText.pack(side="top", pady=5)
 
-        row3 = ctk.CTkScrollableFrame(
+        row4 = ctk.CTkScrollableFrame(
             dashboardContentsFrame,
             corner_radius=18,
             width=375,
@@ -147,9 +171,9 @@ def show_menu(
             scrollbar_fg_color="#b8f3fa",
             scrollbar_button_color="#0097b2"
         )
-        row3.pack(side="top", anchor="center", padx=25, pady=10)
+        row4.pack(side="top", anchor="center", padx=25, pady=10)
 
-        for widget in row3.winfo_children():
+        for widget in row4.winfo_children():
             widget.destroy()
 
         list_of_avail_ITs = get_list_of_avail_ITemployees()
@@ -157,14 +181,14 @@ def show_menu(
         if list_of_avail_ITs:
             for row in list_of_avail_ITs:
                 ITname = ctk.CTkLabel(
-                    row3,
+                    row4,
                     text=row,
                     text_color="#000000"
                 )
                 ITname.pack(side="top", anchor="w", pady=(0,5))
         else:
             ITname = ctk.CTkLabel(
-                row3,
+                row4,
                 text="All IT Employees are currently handling a ticket"
             )
             ITname.pack(side="top", pady=(0,5))

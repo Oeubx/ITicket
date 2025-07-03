@@ -1,35 +1,12 @@
 
 #
-import os
 
 from BackEnd.SQLiteQueries.GeneralQueries import SQLiteCall
 
 dbConn, pointer = SQLiteCall()
 
-# file stuffs
-project_folder = os.path.dirname(os.path.abspath(__file__))
-filePointer = r"C:\BIBOYstuffs\\CODES\\PYTHON CODES\\ITicket\BackEnd\Auth\\previously_logged_in_details.txt"
-
 # --------------------------------------------------------- #
-# queries for profile | Signup_Backend.py
-# --------------------------------------------------------- #
-# read from file
-def get_loggedIn_UsersId():
-    with open(filePointer, "r") as file:
-        lines = file.readlines()
-
-    emp_Id = lines[1].strip() #gets the first index (2nd item which is emp_Id)
-
-    getLogged_acc_details = "SELECT * FROM Employee WHERE employee_Id = ?"
-
-    pointer.execute(getLogged_acc_details, (emp_Id,))
-    acc_details = pointer.fetchone()
-    # gets the id only
-    user_id = acc_details[0]
-    
-    return int(user_id)
-# --------------------------------------------------------- #
-# get queries
+# get queries for edit profile interface
 # --------------------------------------------------------- #
 def get_userDetails(id):
     get_query = """
@@ -67,8 +44,9 @@ def get_userEmail(id):
     user_email = pointer.fetchone()
     
     return user_email
+
 # --------------------------------------------------------- #
-# update queries
+# update queries for edit profile interface
 # --------------------------------------------------------- #
 def updateUserName(id, newName):
     update_query = """
@@ -116,5 +94,14 @@ def updateUserPass(id, newPassword):
         return False
 
 # --------------------------------------------------------- #
-#
+# get queries for my tickets interface
 # --------------------------------------------------------- #
+def get_MyTickets(userId, sortOrder):
+    query = f"""
+            SELECT ticket_Id
+            FROM Ticket
+            WHERE submitted_by = ?
+            ORDER BY created_at {sortOrder}
+        """
+    pointer.execute(query, (userId,))
+    return pointer.fetchall()

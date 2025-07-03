@@ -7,7 +7,7 @@ from PIL import Image
 
 #from BackEnd.Auth.LoggedIn_Acc import logoutUpdateFile
 from BackEnd.ReadfromFile import logoutUpdateFile
-from BackEnd.Dashboard.Dashboard_MenuBackend import gotoProfile
+from BackEnd.Dashboard.Dashboard_MenuBackend import gotoProfile, gotoMyTickets
 
 #will update to get_assets
 def get_profileIcon():
@@ -24,6 +24,13 @@ def get_arrowBackIcon():
     arrowBack_icon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))  # adjust size as needed
     return arrowBack_icon
 
+def get_ticketIcon():
+    current_dir = os.path.dirname(__file__)
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "ticket logo.png")
+
+    ticket_icon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))  # adjust size as needed
+    return ticket_icon
+
 # --------------------------------------------------------- #
 # functions for icons ^^^ |
 # --------------------------------------------------------- #
@@ -38,7 +45,7 @@ def load_dashboardMenu(
         return  # Already built
 
     profile_icon = get_profileIcon()
-    arrowBack_icon = get_arrowBackIcon()
+    ticket_icon = get_ticketIcon()
 
     mHome = ctk.CTkButton(
         barFrame,
@@ -54,25 +61,20 @@ def load_dashboardMenu(
         text="Profile",
         image=profile_icon,
         compound="left",
-        command=lambda: gotoProfile(mainFrame, headerFrame)  # ✅ pass headerFrame
+        command=lambda: gotoProfile(mainFrame, headerFrame) 
     )
     pGoTo_Profile.pack(side="top", padx=25, pady=(25, 0))
 
-    pGoTo_Tickets = ctk.CTkButton(
-        barFrame,
-        text="Notifications",
-        # need tickets icon
-        compound="left"
-    )
-    pGoTo_Tickets.pack(side="top", padx=25, pady=(25, 0))
-
-    pGoTo_TicketHistory = ctk.CTkButton(
+    pGoTo_MyTickets = ctk.CTkButton(
         barFrame,
         text="My Tickets",
-        image=profile_icon,
-        compound="left"
+        image=ticket_icon,
+        compound="left",
+        command=lambda: gotoMyTickets(mainFrame, headerFrame) 
     )
-    pGoTo_TicketHistory.pack(side="top", padx=25, pady=(25, 0))
+    pGoTo_MyTickets.pack(side="top", padx=25, pady=(25, 0))
+
+    #add Handled Tickets for it employees
 
     pLogOut_User = ctk.CTkButton(
         barFrame,

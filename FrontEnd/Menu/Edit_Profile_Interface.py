@@ -1,11 +1,9 @@
 
 import customtkinter as ctk
 
-from Assets.GradientBg import create_gradient_frame
-
+from BackEnd.ReadfromFile import get_loggedIn_UsersId
+from BackEnd.SQLiteQueries.MenuBarContentsQueries import  get_userDetails
 from BackEnd.Dashboard.Dashboard_MenuContentsBackend import btnAction, btnCancel
-
-from BackEnd.SQLiteQueries.MenuBarContentsQueries import get_loggedIn_UsersId, get_userDetails
 
 def load_Profile(frame):
     userId = get_loggedIn_UsersId()
