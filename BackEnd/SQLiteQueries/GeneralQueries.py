@@ -26,8 +26,10 @@ def SQLiteCall():
     global _dbConn, _pointer
     if _dbConn is None:
         db_path = os.path.join(project_folder, "ITicket.db")
-        # Ensure 'BackEnd' folder exists
-        os.makedirs(os.path.dirname(db_path), exist_ok=True) 
+
+        # Make sure the database's directory exists — i.e., 'BackEnd'
+        os.makedirs(project_folder, exist_ok=True)
+
         _dbConn = sql.connect(db_path)
         _pointer = _dbConn.cursor()
         _dbConn.commit()
