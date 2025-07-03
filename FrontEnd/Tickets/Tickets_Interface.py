@@ -71,7 +71,8 @@ def load_ticketsInterface(frame):
         width=400,
         height=400,
         fg_color="#e9feff",
-        scrollbar_fg_color="gray",
+        scrollbar_fg_color="#b8f3fa",
+        scrollbar_button_color="#0097b2"
     )
     scrollable_frame.pack(side="top", padx=20, fill="both", expand=True)
 

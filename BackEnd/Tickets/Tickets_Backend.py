@@ -293,10 +293,14 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     titleText.pack(side="top", anchor="w", padx=25, pady=(0, 10))
 
     # 
-    bodyFrame = ctk.CTkFrame(
+    bodyFrame = ctk.CTkScrollableFrame(
         fullticketFrame,
         fg_color="#e9feff",
-        )
+        width=350,
+        height=550,  # ← chosen height between your min and max
+        scrollbar_fg_color="#b8f3fa",
+        scrollbar_button_color="#0097b2"
+    )
     bodyFrame.pack(side="top", anchor="w", fill="x", padx=25, pady=(0, 15))
 
     tDesc = ctk.CTkLabel(

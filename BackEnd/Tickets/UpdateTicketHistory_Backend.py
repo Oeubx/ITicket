@@ -74,14 +74,33 @@ def showTicketReopenWindow(status, defaultStatus):
 # --------------------------------------------------------- #
 # 
 # --------------------------------------------------------- #
-def renderTicketHistory(bodyFrame, ticketId):
+def renderFullTicket(bodyFrame, ticketId):
     # clear history
     for widget in bodyFrame.winfo_children():
         widget.destroy()
 
-    # query for this ticket's history
-    ticketHistoryDetailsHolder = get_ThisTicketsHistory(ticketId)
+    # query for ticket
+    ticketDetailsHolder = get_TicketDetails(ticketId)
+    # get from ^ saves it here v
+    id, title, desc, status, level, submitted_by = ticketDetailsHolder
 
+    tDesc = ctk.CTkLabel(
+        bodyFrame,
+        text=desc,
+        anchor="nw",
+        justify="left",   
+        text_color="#000000"
+        )
+    tDesc.pack(side="top", anchor="nw", padx=15, pady=15)
+
+    # -------------------------------------------------------------------------------- #
+    # Ticket History
+    # -------------------------------------------------------------------------------- #
+
+    # query for this ticket's history
+    ticketHistoryDetailsHolder = get_ThisTicketsHistory(id)
+
+    # if it has contents
     if ticketHistoryDetailsHolder:
         xDivider = ctk.CTkFrame(bodyFrame, height=2, fg_color="gray")
         xDivider.pack(side="top", fill="x", padx=10)
@@ -91,9 +110,10 @@ def renderTicketHistory(bodyFrame, ticketId):
             handler, updateDesc = row
 
             th_Frame = ctk.CTkFrame(
-                bodyFrame
+                bodyFrame,
+                fg_color="#e9feff",
                 )
-            th_Frame.pack(side="top", anchor="w", padx=25, pady=10)
+            th_Frame.pack(side="top", anchor="w", padx=15, pady=10)
             th_Frame.pack_propagate(True)  # allows the frame to size to its content
 
             #query to get ticket submitters username
@@ -108,7 +128,8 @@ def renderTicketHistory(bodyFrame, ticketId):
                 th_innerFrame,
                 text=f"{handlerName} :",
                 anchor="w",
-                justify="left"
+                justify="left",
+                text_color="#000000"
             )
             th_ticketHandler.pack(anchor="w", pady=2)
 
@@ -117,9 +138,12 @@ def renderTicketHistory(bodyFrame, ticketId):
                 th_innerFrame,
                 text=f"{updateDesc}",
                 anchor="w",
-                justify="left"
+                justify="left",
+                text_color="#000000"
             )
             th_updateDesc.pack(anchor="w", pady=2)
+
+    # -------------------------------------------------------------------------------- #
 
 # --------------------------------------------------------- #
 # 
@@ -175,18 +199,18 @@ def updateTicketHistory(
     elif stringStatus == "Close":
         statusWidget.configure(text="Closed")
 
-    renderTicketHistory(historyFrame, ticketId)
+    renderFullTicket(historyFrame, ticketId)
 
     if stringStatus == "Close":
         for widget in btnsFrame.winfo_children():
             widget.pack_forget()
-        openBtn.pack(side="right", padx=25)
+        openBtn.pack(side="right")
 
     elif stringStatus == "Open":
         # show Close, hide Open
         for widget in btnsFrame.winfo_children():
             widget.pack_forget()
-        closeBtn.pack(side="right", padx=25)
+        closeBtn.pack(side="right")
 
     # i need to refresh the ticket interface too
     # why?
