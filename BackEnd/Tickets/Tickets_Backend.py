@@ -7,9 +7,9 @@ from PIL import Image, ImageTk
 from FrontEnd.Tickets.TicketCreation import load_TicketCreation
 
 from BackEnd.Tickets.UpdateTicketHistory_Backend import updateTicketHistory
-from BackEnd.SQLiteQueries.TicketQueries import *
+from BackEnd.SQLiteQueries.TicketQueries import * # usage of * since too many was called/used
 from BackEnd.SQLiteQueries.LoggedInAcc_Queries import get_userEmpType
-
+from BackEnd.ReadfromFile import get_loggedIn_UsersId
 
 # global variable
 current_displayed_ticket_id = None
@@ -34,6 +34,7 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
     elif filter_order == "Descending" :
         sortOrder = "DESC"
 
+    ###
     loggedUser_Id = get_loggedIn_UsersId()
 
     if value == "All Tickets":

@@ -10,29 +10,22 @@ dbConn, pointer = SQLiteCall()
 
 # file stuffs
 project_folder = os.path.dirname(os.path.abspath(__file__))
-filePointer = r"C:\BIBOYstuffs\\CODES\\PYTHON CODES\\ITicket\BackEnd\Auth\\previously_logged_in_details.txt"
+filePointer = os.path.join(project_folder, "BackEnd", "Auth", "previously_logged_in_details.txt")
+#filePointer = r"C:\BIBOYstuffs\\CODES\\PYTHON CODES\\ITicket\BackEnd\Auth\\previously_logged_in_details.txt"
 
 # --------------------------------------------------------- #
 # read from file logic
 # --------------------------------------------------------- #
-def get_loggedIn_UsersId():
-    with open(filePointer, "r") as file:
-        lines = file.readlines()
 
-    emp_Id = lines[1].strip() #gets the first index (2nd item which is emp_Id)
-
-    getLogged_acc_details = "SELECT employee_Id FROM Employee WHERE employee_Id = ?"
-
-    pointer.execute(getLogged_acc_details, (emp_Id,))
-    acc_details = pointer.fetchone()
-    # gets the id only
-    user_id = acc_details[0]
-    
-    return int(user_id)
+# ticket creation | line 18 | is commented => passed to read from file
+# ticket creation backend | line 57 | is commented => passed to read from file
+# tickets backend | line 38 | is commented => passed to read from file
+# def get_loggedIn_UsersId():
 
 # --------------------------------------------------------- #
 # get queries for ticket creation | ticket creation.py
 # --------------------------------------------------------- #
+# ticket creation | line 21
 def get_userName(id):
     get_query = """
         SELECT employee_username

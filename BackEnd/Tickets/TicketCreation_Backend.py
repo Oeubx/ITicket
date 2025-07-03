@@ -1,7 +1,8 @@
 
 import customtkinter as ctk
 
-from BackEnd.SQLiteQueries.TicketQueries import *
+from BackEnd.SQLiteQueries.TicketQueries import createTicket
+from BackEnd.ReadfromFile import get_loggedIn_UsersId
 
 from BackEnd.SQLite_Calls import SQLiteCall
 dbConn, pointer = SQLiteCall()
@@ -54,6 +55,7 @@ def submitTicket( #passes the widgets and .gets their values
         else:
             finalDescription = description
 
+        ###
         submitterId = get_loggedIn_UsersId()
 
         #query

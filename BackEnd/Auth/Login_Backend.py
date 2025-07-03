@@ -6,7 +6,8 @@ from PIL import Image
 import customtkinter as ctk
 import bcrypt #to read passwords
 
-from BackEnd.Auth.LoggedIn_Acc import loginUpdateFile
+#from BackEnd.Auth.LoggedIn_Acc import loginUpdateFile
+from BackEnd.ReadfromFile import loginUpdateFile
 
 # accesses the queries necessary
 from BackEnd.SQLiteQueries.AuthQueries import fetch_all_login_credentials

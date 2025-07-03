@@ -8,7 +8,10 @@ dbConn, pointer = SQLiteCall()
 
 # file stuffs
 project_folder = os.path.dirname(os.path.abspath(__file__))
-filePointer = r"C:\BIBOYstuffs\\CODES\\PYTHON CODES\\ITicket\BackEnd\Auth\\previously_logged_in_details.txt"
+# new directory
+filePointer = os.path.join(project_folder, "BackEnd", "Auth", "previously_logged_in_details.txt")
+# old directory
+#filePointer = r"C:\BIBOYstuffs\\CODES\\PYTHON CODES\\ITicket\BackEnd\Auth\\previously_logged_in_details.txt"
 
 # --------------------------------------------------------- #
 # queries for Logged in Account | LoggedIn_Acc.py
@@ -18,6 +21,26 @@ def fetch_all_user_credentials(id):
     userContentsHolder = pointer.fetchone()
 
     return userContentsHolder
+
+def fetch_user_id(id):
+    get_Id_query = "SELECT employee_Id FROM Employee WHERE employee_Id = ?"
+
+    pointer.execute(get_Id_query, (id,))
+    acc_details = pointer.fetchone()
+    
+    # passed the id only
+    # ( id, <null>)
+    return acc_details[0]
+
+def fetch_user_type(id):
+    get_type_query = "SELECT employee_type FROM Employee WHERE employee_Id = ?"
+
+    pointer.execute(get_type_query, (id,))
+    acc_details = pointer.fetchone()
+    
+    # passed the type only
+    # ( type, <null>)
+    return acc_details[0]
 
 def get_userEmpType():
     with open(filePointer, "r") as file:

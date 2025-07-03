@@ -6,6 +6,7 @@
 
 import sqlite3 as sql
 import bcrypt
+import os
 
 _dbConn = None
 _pointer = None
@@ -15,13 +16,18 @@ _pointer = None
 
 # file stuffs
 #project_folder = os.path.dirname(os.path.abspath(__file__))
+#filePointer = os.path.join(project_folder, "BackEnd", "Auth", "previously_logged_in_details.txt")
 #filePointer = r"C:\BIBOYstuffs\\CODES\\PYTHON CODES\\ITicket\BackEnd\Auth\\previously_logged_in_details.txt"
 
+# Dynamically locate the project directory
+project_folder = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 def SQLiteCall():
     global _dbConn, _pointer
     if _dbConn is None:
-        db_path = "C:/BIBOYstuffs/CODES/PYTHON CODES/ITicket/BackEnd/ITicket.db"
+        db_path = os.path.join(project_folder, "ITicket.db")
+        # Ensure 'BackEnd' folder exists
+        os.makedirs(os.path.dirname(db_path), exist_ok=True) 
         _dbConn = sql.connect(db_path)
         _pointer = _dbConn.cursor()
         _dbConn.commit()
@@ -58,7 +64,7 @@ def getEmpName_fromDb(id): #id of the passed employee
     return empUsername[0]
 
 # --------------------------------------------------------- #
-# validation for db commits
+# validation template for db commits
 """
     try:
         pointer.execute(query_string, (values, othervalues... ) )
@@ -77,6 +83,8 @@ def getEmpName_fromDb(id): #id of the passed employee
 def employee_table_creation():
     dbConn, pointer = SQLiteCall()
 
+    table_created_now = False  # Start assuming it wasn't created
+
     # changed sequence id - uname - email - pass - type //0, 1 for IT
     creation="""
         CREATE TABLE IF NOT EXISTS Employee (
@@ -90,10 +98,21 @@ def employee_table_creation():
     pointer.execute(creation)
     dbConn.commit()
 
-    print("employee table creation test")
+    # Logic check — flip boolean based on assumption
+    # Since `IF NOT EXISTS` doesn’t tell us directly, we can simulate logic like this:
+    if pointer.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Employee'").fetchone():
+        table_created_now = True
+
+    # Use the boolean flag
+    if table_created_now:
+        print("Employee table exists (created now or already existed).")
+    else:
+        print("Employee table was not created.")
 
 def ticket_table_creation():
     dbConn, pointer = SQLiteCall()
+
+    table_created_now = False  # Start assuming it wasn't created
 
     # ticket status = closed or open
     # ticket level = Inquiry, Non-Urgent, Urgent
@@ -112,26 +131,47 @@ def ticket_table_creation():
     pointer.execute(creation)
     dbConn.commit()
 
-    print("ticket table creation test")
+    # Logic check — flip boolean based on assumption
+    # Since `IF NOT EXISTS` doesn’t tell us directly, we can simulate logic like this:
+    if pointer.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Ticket'").fetchone():
+        table_created_now = True
+
+    # Use the boolean flag
+    if table_created_now:
+        print("Ticket table exists (created now or already existed).")
+    else:
+        print("Ticket table was not created.")
 
 def ticket_history_table_creation():
     dbConn, pointer = SQLiteCall()
 
-    creation="""
+    table_created_now = False  # Start assuming it wasn't created
+
+    creation = """
         CREATE TABLE IF NOT EXISTS Ticket_History (
-            ticket_history_Id INTEGER PRIMARY KEY AUTOINCREMENT
-            ,ticket_Id INTEGER NOT NULL
-            ,ticket_Handler INTEGER NULL
-            ,update_Description TEXT NOT NULL
-            ,update_Date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-            ,FOREIGN KEY (ticket_Id) REFERENCES Ticket(ticket_Id)
-            ,FOREIGN KEY (ticket_Handler) REFERENCES Employee(employee_Id)
+            ticket_history_Id INTEGER PRIMARY KEY AUTOINCREMENT,
+            ticket_Id INTEGER NOT NULL,
+            ticket_Handler INTEGER NULL,
+            update_Description TEXT NOT NULL,
+            update_Date TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (ticket_Id) REFERENCES Ticket(ticket_Id),
+            FOREIGN KEY (ticket_Handler) REFERENCES Employee(employee_Id)
         );
     """
+
     pointer.execute(creation)
     dbConn.commit()
 
-    print("ticket history table creation test")
+    # Logic check — flip boolean based on assumption
+    # Since `IF NOT EXISTS` doesn’t tell us directly, we can simulate logic like this:
+    if pointer.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='Ticket_History'").fetchone():
+        table_created_now = True
+
+    # Use the boolean flag
+    if table_created_now:
+        print("Ticket_History table exists (created now or already existed).")
+    else:
+        print("Ticket_History table was not created.")
 
 # --------------------------------------------------------- #
 # queries for insertion of values

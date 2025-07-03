@@ -1,12 +1,19 @@
 
+# is currently UNUSED AFTER OPTIMIZATION
+# created a new and separated
+# read from file .py
+# logged in acc queries .py
+
 import os
 
 from BackEnd.SQLiteQueries.LoggedInAcc_Queries import fetch_all_user_credentials
 
-#file stuffs
+# file stuffs
 project_folder = os.path.dirname(os.path.abspath(__file__))
-filePointer = os.path.join(project_folder, "previously_logged_in_details.txt")
+filePointer = os.path.join(project_folder, "BackEnd", "Auth", "previously_logged_in_details.txt")
+#filePointer = r"C:\BIBOYstuffs\\CODES\\PYTHON CODES\\ITicket\BackEnd\Auth\\previously_logged_in_details.txt"
 
+############
 def read_AuthValue_fromFile():
     with open(filePointer, "r") as file:
         line1 = file.readline().strip()
@@ -14,6 +21,7 @@ def read_AuthValue_fromFile():
     #returns an integer instead of default string
     return int(line1) 
 
+###########
 #update file everytime user logs in
 def loginUpdateFile(id):
 
@@ -31,6 +39,7 @@ def loginUpdateFile(id):
         file.write(f"{emp_pw}\n")
         file.write(f"{emp_type}\n")
 
+############
 #logout basic logic
 def logoutUpdateFile():
     # overwrites everything and 

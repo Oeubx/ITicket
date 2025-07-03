@@ -31,7 +31,7 @@ def load_ticketsInterface(frame):
 
     #main frames
     # Add a variable to store filter value (default is Ascending)
-    #initialize the frame and loads the tickets first
+    # initialize the frame and loads the tickets first
     scrollable_frame = ctk.CTkScrollableFrame(leftFrame)
     reloadTicket("All Tickets", scrollable_frame, yDivider, rightFrame, "Ascending")
 

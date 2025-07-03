@@ -16,10 +16,15 @@ ITicket.title("ITicket")
 get_ITicketIcon(ITicket)
 
 #module imports
-from BackEnd.Auth.LoggedIn_Acc import read_AuthValue_fromFile
+#from BackEnd.Auth.LoggedIn_Acc import read_AuthValue_fromFile
+from BackEnd.ReadfromFile import read_AuthValue_fromFile
+from BackEnd.DatabaseChecker import check_if_db_exists
 from BackEnd.Auth.Auth_Backend import load_auth
 
 #start
+
+check_if_db_exists()
+
 main_container_frame = ctk.CTkFrame(
     ITicket,
     fg_color="#a5fbff",

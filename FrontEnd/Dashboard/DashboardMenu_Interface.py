@@ -5,7 +5,8 @@ import customtkinter as ctk
 import os
 from PIL import Image
 
-from BackEnd.Auth.LoggedIn_Acc import logoutUpdateFile
+#from BackEnd.Auth.LoggedIn_Acc import logoutUpdateFile
+from BackEnd.ReadfromFile import logoutUpdateFile
 from BackEnd.Dashboard.Dashboard_MenuBackend import gotoProfile
 
 #will update to get_assets
