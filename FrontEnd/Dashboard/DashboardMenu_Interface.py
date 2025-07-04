@@ -56,7 +56,9 @@ def load_dashboardMenu(
         text="Home",
         #image=icon,
         compound="left",
-        command=toggle_callback
+        command=toggle_callback,
+        fg_color="#00c2cb",
+        text_color="#000000"
     )
     mHome.pack(side="top", pady=(25, 0))
 
@@ -65,7 +67,9 @@ def load_dashboardMenu(
         text="Profile",
         image=profile_icon,
         compound="left",
-        command=lambda: gotoProfile(mainFrame, headerFrame) 
+        command=lambda: gotoProfile(mainFrame, headerFrame),
+        fg_color="#00c2cb",
+        text_color="#000000"
     )
     pGoTo_Profile.pack(side="top", padx=25, pady=(25, 0))
 
@@ -74,16 +78,20 @@ def load_dashboardMenu(
         text="My Tickets",
         image=ticket_icon,
         compound="left",
-        command=lambda: gotoMyTickets(mainFrame, headerFrame) 
+        command=lambda: gotoMyTickets(mainFrame, headerFrame),
+        fg_color="#00c2cb",
+        text_color="#000000"
     )
     pGoTo_MyTickets.pack(side="top", padx=25, pady=(25, 0))
 
     manageEmployees = ctk.CTkButton(
         barFrame,
         text="Employee Management",
-        image=ticket_icon,
+        #image=ticket_icon,
         compound="left",
-        command=lambda: gotoEmployeeManagement(mainFrame, headerFrame) 
+        command=lambda: gotoEmployeeManagement(mainFrame, headerFrame),
+        fg_color="#00c2cb",
+        text_color="#000000"
     )
     user_EmpType = get_userEmpType()
     if user_EmpType == 1 :
@@ -97,7 +105,9 @@ def load_dashboardMenu(
         command=lambda: [
             logoutUpdateFile(),
             auth_callback(container, 0, container)
-        ]
+        ],
+        fg_color="#00c2cb",
+        text_color="#ffffff"
     )
     pLogOut_User.pack(side="bottom", anchor="e", padx=25, pady=25)
 

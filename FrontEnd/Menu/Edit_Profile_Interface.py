@@ -57,7 +57,10 @@ def load_Profile(frame):
 
     epUsername_Entry = ctk.CTkEntry(
         epUsernameFrame,
-        width = 150
+        width = 150,
+        fg_color="#e9feff",
+        placeholder_text_color="#000000",
+        text_color="#000000"
         )
     epUsername_Entry.insert(0, userName)
     epUsername_Entry.configure(state="readonly")
@@ -73,7 +76,10 @@ def load_Profile(frame):
 
     epEmailEntry = ctk.CTkEntry(
         epEmailFrame,
-        width = 150
+        width = 150,
+        fg_color="#e9feff",
+        placeholder_text_color="#000000",
+        text_color="#000000"
         )
     epEmailEntry.insert(0, userEmail)
     epEmailEntry.configure(state="readonly")
@@ -92,7 +98,10 @@ def load_Profile(frame):
         epPasswordFrame,
         show="*",
         placeholder_text="New Password",
-        width = 150
+        width = 150,
+        fg_color="#e9feff",
+        placeholder_text_color="#000000",
+        text_color="#000000"
         )
     epPasswordEntry.pack(side="left", pady=25, padx=(25, 0))
 
@@ -100,7 +109,10 @@ def load_Profile(frame):
         epPasswordFrame,
         show="*",
         placeholder_text="Confirm Password",
-        width = 150
+        width = 150,
+        fg_color="#e9feff",
+        placeholder_text_color="#000000",
+        text_color="#000000"
         )
     epConfirmPasswordEntry.pack(side="left", pady=25, padx=25)
 

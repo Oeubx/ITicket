@@ -58,8 +58,8 @@ def load_dashboard(container, authValue, auth_callback):
     # bar frame (menu)
     barFrame = ctk.CTkFrame(
         dashboardMainFrame,
-        fg_color= "white",
-        bg_color= "white"
+        fg_color= "#d2fdff",
+        bg_color="#d2fdff"
         )
     barFrame.pack_forget()  # Initially hidden
 

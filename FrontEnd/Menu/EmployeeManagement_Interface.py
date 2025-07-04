@@ -13,16 +13,14 @@ def load_EmployeeManagement(frame):
 
     managementFrame = ctk.CTkFrame(
         frame,
-        fg_color="#a5fbff",
-        bg_color="#a5fbff"
+        fg_color="#d2fdff"
         )
     managementFrame.pack(side="top", fill="both", expand=True)
 
     # Header bar
     headerFrame = ctk.CTkFrame(
         managementFrame,
-        fg_color="#a5fbff",
-        bg_color="#a5fbff"
+        fg_color="#d2fdff"
         )
     headerFrame.pack(side="top", anchor="nw")
 
@@ -57,14 +55,16 @@ def load_EmployeeManagement(frame):
         username, email = userContentHolder
 
         mainRow = ctk.CTkFrame(
-            contentsFrame
+            contentsFrame,
+            fg_color="#d2fdff"
         )
         mainRow.pack(side="top", anchor="w", padx=25, pady=(25,10))
         
         row1 = ctk.CTkFrame(
-            mainRow
+            mainRow,
+            fg_color="#d2fdff"
         )
-        row1.pack(side="left", anchor="w", padx=25, pady=(25,10))
+        row1.pack(side="left", anchor="w", padx=25)
 
         #row1 contents
         usernameLabel = ctk.CTkLabel(
@@ -73,7 +73,7 @@ def load_EmployeeManagement(frame):
             font=("Arial", 25),
             text_color="#000000"
         )
-        usernameLabel.pack(side="top", padx=5, pady=5)
+        usernameLabel.pack(side="top", anchor="w", padx=5, pady=5)
 
         emailLabel = ctk.CTkLabel(
             row1,
@@ -81,9 +81,8 @@ def load_EmployeeManagement(frame):
             font=("Arial", 15),
             text_color="#000000"
         )
-        emailLabel.pack(side="top", padx=5, pady=5)
+        emailLabel.pack(side="top", anchor="w", padx=5, pady=5)
 
-        # no command
         editAccount_Btn = ctk.CTkButton(
             row1,
             text="Edit",
@@ -91,10 +90,11 @@ def load_EmployeeManagement(frame):
             text_color="#000000",
             command=lambda uid=userId: show_subwindow("Edit", uid)
             )
-        editAccount_Btn.pack(side="bottom", anchor="center", padx=10, pady=10)
+        editAccount_Btn.pack(side="bottom", anchor="w", padx=10, pady=10)
 
         row2 = ctk.CTkFrame(
-            mainRow
+            mainRow,
+            fg_color="#d2fdff"
         )
         row2.pack(side="left", anchor="w", padx=25, pady=(25,10))
 
@@ -105,10 +105,10 @@ def load_EmployeeManagement(frame):
             width=125,
             height=40,
             font=("Arial", 16),
-            fg_color="#a5fbff",
-            text_color="#666666"
+            fg_color="#00c2cb",
+            text_color="#000000"
         )
-        delAccount_Btn.pack(side="top", anchor="w")
+        delAccount_Btn.pack(side="top", anchor="nw", pady=25)
 
         delTickets_Btn = ctk.CTkButton(
             row2,
@@ -117,7 +117,7 @@ def load_EmployeeManagement(frame):
             width=125,
             height=40,
             font=("Arial", 16),
-            fg_color="#a5fbff",
-            text_color="#666666"
+            fg_color="#00c2cb",
+            text_color="#000000"
         )
-        delTickets_Btn.pack(side="top", anchor="w")
+        delTickets_Btn.pack(side="top", anchor="nw", pady=25)
