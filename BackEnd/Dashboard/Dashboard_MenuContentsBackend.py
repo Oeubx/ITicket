@@ -6,7 +6,17 @@ import re
 from BackEnd.ReadfromFile import get_loggedIn_UsersId
 from BackEnd.SQLiteQueries.MenuBarContentsQueries import  get_userDetails
 
-from BackEnd.SQLiteQueries.MenuBarContentsQueries import *
+from BackEnd.SQLiteQueries.MenuBarContentsQueries import (
+    get_userName,
+    get_userEmail,
+    updateUserName,
+    updateUserEmail,
+    updateUserPass,
+    del_AllRelatedToAcc,
+    del_AllTicketsOfThisUser,
+    del_SpecificTicketsOfThisUser,
+    get_ThisUsersTickets
+)
 
 # --------------------------------------------------------- #
 # for profile 
@@ -186,7 +196,7 @@ def show_subwindow(value, userId):
     if value == "Edit":
         headerText = ctk.CTkLabel(
             contentsHolder_Frame,
-            text="Employee Account | Editing",
+            text="ITicket : Profile",
             text_color="#000000",
             font=("Arial", 32, "bold"),
             height=50,
@@ -195,7 +205,7 @@ def show_subwindow(value, userId):
         )
         headerText.pack(side="top", anchor="nw", padx=50, pady=25)
 
-        userId = get_loggedIn_UsersId()
+        #userId = get_loggedIn_UsersId()
         userDetails = get_userDetails(userId)
 
         userId = userDetails[0]
@@ -274,7 +284,7 @@ def show_subwindow(value, userId):
         epCancelBtn.configure(
             text="Cancel",
             command = lambda: btnCancel(
-                    None,
+                    headerText,
                     epCancelBtn, epUpdateProfileBtn,
                     epUsername_Entry, epEmailEntry,
                     epPasswordFrame, epPasswordEntry, epConfirmPasswordEntry
@@ -286,7 +296,7 @@ def show_subwindow(value, userId):
         epUpdateProfileBtn.configure(
             text="Edit Profile", #and then change it to Save Profile
             command=lambda : btnAction(
-                    None,
+                    headerText,
                     userId, userPass, 
                     epCancelBtn, epUpdateProfileBtn,
                     epUsername_Entry, epEmailEntry,
@@ -390,11 +400,11 @@ def show_subwindow(value, userId):
             )
             buttonFrame2.pack(side="top", anchor="w", pady=(5, 15))
 
-            def handle_all_tickets():
+            def handle_all_tickets(userId):
                 del_AllTicketsOfThisUser(userId)
                 managementWindow.destroy()
 
-            def show_specific_tickets():
+            def show_specific_tickets(userId):
                 scrollable_frame = ctk.CTkScrollableFrame(
                     contentsHolder_Frame,
                     width=400,
@@ -405,7 +415,11 @@ def show_subwindow(value, userId):
                 )
                 scrollable_frame.pack(side="top", padx=20, fill="both", expand=True)
 
-                ticket_ContentsHolder = get_ThisUsersTickets(userId)  # <-- fix: call the function
+                ticket_ContentsHolder = get_ThisUsersTickets(userId)
+
+                if not ticket_ContentsHolder:
+                    ctk.CTkLabel(scrollable_frame, text="No tickets found.", text_color="#000000").pack(pady=20)
+                    return
 
                 for row in ticket_ContentsHolder:
                     ticketId, title, status, level, created_at, submitterName = row
@@ -413,14 +427,12 @@ def show_subwindow(value, userId):
                     tContentFrame = ctk.CTkFrame(scrollable_frame, fg_color="#d2fdff")
                     tContentFrame.pack(side="top", fill="x", expand=True, padx=(0, 15), pady=15)
 
-                    # Left and Right sections
                     ticket_LeftFrame = ctk.CTkFrame(tContentFrame, fg_color="#d2fdff")
                     ticket_LeftFrame.pack(side="left", anchor="w", padx=25, pady=25)
 
                     ticket_frame = ctk.CTkFrame(tContentFrame, fg_color="#d2fdff")
                     ticket_frame.pack(side="right", anchor="e", padx=25, pady=25)
 
-                    # Header
                     ticket_headerFrame = ctk.CTkFrame(ticket_LeftFrame, fg_color="#d2fdff")
                     ticket_headerFrame.pack(side="top", anchor="w")
 
@@ -428,13 +440,11 @@ def show_subwindow(value, userId):
                     ctk.CTkLabel(ticket_headerFrame, text=f"{title} | ", font=("Arial", 16, "bold"), text_color="#000000").pack(side="left")
                     ctk.CTkLabel(ticket_headerFrame, text=f"{level}", font=("Arial", 16, "bold"), text_color="#000000").pack(side="left")
 
-                    # Subheader
                     ticket_subFrame = ctk.CTkFrame(ticket_LeftFrame, fg_color="#d2fdff")
                     ticket_subFrame.pack(side="top", anchor="w")
 
                     ctk.CTkLabel(ticket_subFrame, text=f"Created at {created_at} | ", text_color="#000000").pack(side="left")
 
-                    # Right section
                     ctk.CTkLabel(ticket_frame, text=f"{status}", text_color="#000000", fg_color="#d2fdff").pack(side="top", pady=5)
 
                     del_thisTicket_Btn = ctk.CTkButton(
@@ -450,12 +460,12 @@ def show_subwindow(value, userId):
             allTickets_btn = ctk.CTkButton(
                 buttonFrame2,
                 text="Delete All Tickets",
-                command=handle_all_tickets
+                command= lambda: handle_all_tickets(userId)
             )
             specificTicket_btn = ctk.CTkButton(
                 buttonFrame2,
                 text="Select Specific Tickets",
-                command=show_specific_tickets
+                command= lambda: show_specific_tickets(userId)
             )
 
             allTickets_btn.pack(side="left", padx=10, pady=5)
