@@ -7,6 +7,7 @@ import customtkinter as ctk
 # --------------------------------------------------------- #
 from FrontEnd.Menu.Edit_Profile_Interface import load_Profile
 from FrontEnd.Menu.MyTickets_Interface import load_MyTickets
+from FrontEnd.Menu.EmployeeManagement_Interface import load_EmployeeManagement
 
 def gotoProfile(mainFrame, headerFrame):
     for widget in mainFrame.winfo_children():
@@ -22,5 +23,9 @@ def gotoMyTickets(mainFrame, headerFrame):
 
     load_MyTickets(mainFrame)
 
-# def go to users tickets
-# def go to its ticket history
+def gotoEmployeeManagement(mainFrame, headerFrame):
+    for widget in mainFrame.winfo_children():
+        if widget != headerFrame:
+            widget.destroy()
+
+    load_EmployeeManagement(mainFrame)

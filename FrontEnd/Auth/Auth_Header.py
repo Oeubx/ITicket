@@ -34,8 +34,6 @@ def load_authHeader(container):
         )
     ITicketLogo.pack(side="left", anchor="n", padx=(30, 0), pady=30)
 
-    #awaiting design
-    # needs command that will redirect to frontend about us
     AboutUs = ctk.CTkLabel(
         headerFrame,
         text="About Us",

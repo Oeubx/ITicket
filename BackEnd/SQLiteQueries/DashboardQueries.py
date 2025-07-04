@@ -34,8 +34,9 @@ def get_open_ticket_count():
     return result[0] if result else 0
 
 def get_closed_ticket_count():
+    #changed close to closed
     get_query = """
-        SELECT COUNT(*) FROM Ticket WHERE ticket_status = 'Close'
+        SELECT COUNT(*) FROM Ticket WHERE ticket_status = 'Closed'
     """
 
     pointer.execute(get_query)

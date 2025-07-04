@@ -6,8 +6,12 @@ import os
 from PIL import Image
 
 #from BackEnd.Auth.LoggedIn_Acc import logoutUpdateFile
-from BackEnd.ReadfromFile import logoutUpdateFile
-from BackEnd.Dashboard.Dashboard_MenuBackend import gotoProfile, gotoMyTickets
+from BackEnd.ReadfromFile import logoutUpdateFile, get_userEmpType
+from BackEnd.Dashboard.Dashboard_MenuBackend import (
+    gotoProfile,
+    gotoMyTickets,
+    gotoEmployeeManagement
+)
 
 #will update to get_assets
 def get_profileIcon():
@@ -74,7 +78,18 @@ def load_dashboardMenu(
     )
     pGoTo_MyTickets.pack(side="top", padx=25, pady=(25, 0))
 
-    #add Handled Tickets for it employees
+    manageEmployees = ctk.CTkButton(
+        barFrame,
+        text="Employee Management",
+        image=ticket_icon,
+        compound="left",
+        command=lambda: gotoEmployeeManagement(mainFrame, headerFrame) 
+    )
+    user_EmpType = get_userEmpType()
+    if user_EmpType == 1 :
+        manageEmployees.pack(side="top", padx=25, pady=(25, 0))
+    else :
+        manageEmployees.pack_forget()
 
     pLogOut_User = ctk.CTkButton(
         barFrame,
