@@ -141,7 +141,7 @@ def reloadTicket(value, scrollableFrame, divider, rFrame, filter_order):
         ticketRemarks = ctk.CTkButton(
             ticket_frame,
             text = "View Ticket",
-            text_color="#000000",
+            text_color="#FFFFFF",
             fg_color="#00c2cb",
             command=lambda tid=id: showFullTicket(divider, rFrame, tid)
         )
@@ -362,7 +362,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
     # Remarks Section
     remarksText = ctk.CTkLabel(
         fullticketFrame,
-        text="<Remarks>",
+        text="Leave Remarks/Updates Below",
         text_color="#5e4b45"
         )
     
@@ -384,7 +384,7 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         remarksFrame,
         text="Update Ticket",
         fg_color="#00c2cb",
-        text_color="#000000"
+        text_color="#FFFFFF"
         )
     uploadRemarkBtn.pack(side="right", padx=(10, 25), pady=15)
 
@@ -398,13 +398,13 @@ def showFullTicket(divider, frame, ticketId, clicked_btn):
         buttonsFrame,
         text="Close",
         fg_color="#00c2cb",
-        text_color="#000000"
+        text_color="#FFFFFF"
         )
     openStatus_Btn = ctk.CTkButton(
         buttonsFrame,
         text="Open",
         fg_color="#00c2cb",
-        text_color="#000000"
+        text_color="#FFFFFF"
         )
     #packs these two after checking status
     

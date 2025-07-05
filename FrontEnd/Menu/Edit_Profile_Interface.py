@@ -134,7 +134,8 @@ def load_Profile(frame):
                 epCancelBtn, epUpdateProfileBtn,
                 epUsername_Entry, epEmailEntry,
                 epPasswordFrame, epPasswordEntry, epConfirmPasswordEntry
-            )
+            ),
+        text_color="#FFFFFF"
     )
     #epCancelBtn.pack(side="left", pady=25, padx=25)
     epCancelBtn.pack_forget()
@@ -147,6 +148,7 @@ def load_Profile(frame):
                 epCancelBtn, epUpdateProfileBtn,
                 epUsername_Entry, epEmailEntry,
                 epPasswordFrame, epPasswordEntry, epConfirmPasswordEntry
-            )
+            ),
+        text_color="#FFFFFF"
         )
     epUpdateProfileBtn.pack(side="right", pady=25, padx=25)

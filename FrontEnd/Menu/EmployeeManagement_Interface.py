@@ -87,7 +87,7 @@ def load_EmployeeManagement(frame):
             row1,
             text="Edit",
             fg_color="#00c2cb",
-            text_color="#000000",
+            text_color="#FFFFFF",
             command=lambda uid=userId: show_subwindow("Edit", uid)
             )
         editAccount_Btn.pack(side="bottom", anchor="w", padx=10, pady=10)
@@ -96,7 +96,7 @@ def load_EmployeeManagement(frame):
             mainRow,
             fg_color="#d2fdff"
         )
-        row2.pack(side="left", anchor="w", padx=25, pady=(25,10))
+        row2.pack(side="left", anchor="w", padx=25, pady=25)
 
         delAccount_Btn = ctk.CTkButton(
             row2,
@@ -106,9 +106,9 @@ def load_EmployeeManagement(frame):
             height=40,
             font=("Arial", 16),
             fg_color="#00c2cb",
-            text_color="#000000"
+            text_color="#FFFFFF"
         )
-        delAccount_Btn.pack(side="top", anchor="nw", pady=25)
+        delAccount_Btn.pack(side="top", anchor="nw", pady=(0,25))
 
         delTickets_Btn = ctk.CTkButton(
             row2,
@@ -118,6 +118,6 @@ def load_EmployeeManagement(frame):
             height=40,
             font=("Arial", 16),
             fg_color="#00c2cb",
-            text_color="#000000"
+            text_color="#FFFFFF"
         )
-        delTickets_Btn.pack(side="top", anchor="nw", pady=25)
+        delTickets_Btn.pack(side="top", anchor="nw")

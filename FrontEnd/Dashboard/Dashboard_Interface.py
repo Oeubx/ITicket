@@ -19,6 +19,15 @@ from BackEnd.SQLiteQueries.DashboardQueries import (
 
 ###########################################################################
 #icons
+def get_agentIcon():
+    # Get the absolute path to the icon
+    current_dir = os.path.dirname(__file__)
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "agent logo.png")
+    # Load image and wrap it in CTkImage
+
+    agentIcon = ctk.CTkImage(Image.open(icon_path), size=(45, 45))
+    return agentIcon
+
 def get_menuIcon():
     # Get the absolute path to the icon
     current_dir = os.path.dirname(__file__)
@@ -28,19 +37,26 @@ def get_menuIcon():
     icon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
     return icon
 
-def get_backIcon():
+def get_pendingIcon():
     current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "arrow back.png")
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "pending ticket.png")
 
-    backIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
-    return backIcon
+    pendingTicketIcon = ctk.CTkImage(Image.open(icon_path), size=(30, 30))
+    return pendingTicketIcon
 
-def get_forwardIcon():
+def get_openTicketIcon():
     current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "arrow forward.png")
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "open ticket.png")
 
-    backIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
-    return backIcon
+    openTicketIcon = ctk.CTkImage(Image.open(icon_path), size=(30, 30))
+    return openTicketIcon
+
+def get_closedTicketIcon():
+    current_dir = os.path.dirname(__file__)
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "closed ticket.png")
+
+    closedTicketIcon = ctk.CTkImage(Image.open(icon_path), size=(30, 30))
+    return closedTicketIcon
 
 # --------------------------------------------------------- #
 # functions for icons ^^^
@@ -48,9 +64,11 @@ def get_forwardIcon():
 def load_dashboard(container, authValue, auth_callback):
     menuIcon = get_menuIcon()
 
-    tempPendingTicketsIcon = get_backIcon()
-    tempOpenTicketsIcon = get_backIcon()
-    tempClosedTicketsIcon = get_forwardIcon()
+    pendingTicketsIcon = get_pendingIcon()
+    openTicketsIcon = get_openTicketIcon()
+    closedTicketsIcon = get_closedTicketIcon()
+
+    agentIcon = get_agentIcon()
 
     dashboardMainFrame = ctk.CTkFrame(container)
     dashboardMainFrame.pack(fill="both", expand=True)
@@ -86,7 +104,7 @@ def load_dashboard(container, authValue, auth_callback):
         text="",
         image=menuIcon,
         width=40, height=40,
-        fg_color="transparent",
+        fg_color="#d2fdff",
         hover_color="#000000",
         # dashboard backend
         command=lambda: show_menu(
@@ -154,8 +172,9 @@ def load_dashboard(container, authValue, auth_callback):
 
     pendingTickets = ctk.CTkLabel(
         row2,
-        text=f"Pending Tickets : {pendingTickets_Count}",
-        image=tempClosedTicketsIcon,
+        text=f"  Pending Tickets : {pendingTickets_Count}",
+        image=pendingTicketsIcon,
+        font=("Arial", 15),
         compound="left",
         text_color="#000000"
     )
@@ -163,8 +182,9 @@ def load_dashboard(container, authValue, auth_callback):
 
     openTickets = ctk.CTkLabel(
         row2,
-        text=f"Open Tickets : {openTickets_Count}",
-        image=tempOpenTicketsIcon,
+        text=f" Open Tickets : {openTickets_Count}",
+        image=openTicketsIcon,
+        font=("Arial", 15),
         compound="left",
         text_color="#000000"
     )
@@ -172,8 +192,9 @@ def load_dashboard(container, authValue, auth_callback):
 
     closedTickets = ctk.CTkLabel(
         row2,
-        text=f"Closed Tickets : {closedTickets_Count}",
-        image=tempClosedTicketsIcon,
+        text=f" Closed Tickets : {closedTickets_Count}",
+        image=closedTicketsIcon,
+        font=("Arial", 15),
         compound="left",
         text_color="#000000"
     )
@@ -190,7 +211,8 @@ def load_dashboard(container, authValue, auth_callback):
     mostTicketsClosed = ctk.CTkLabel(
         row3,
         text=f"Employee with most tickets handled and closed : {closedTickets_Count}",
-        image=tempClosedTicketsIcon,
+        font=("Arial", 18),
+        image=agentIcon,
         compound="left",
         text_color="#000000"
     )

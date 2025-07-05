@@ -43,7 +43,6 @@ def load_dashboardMenu(
         container, barFrame, mainFrame, headerFrame,
         toggle_callback
     ):
-
     
     if hasattr(barFrame, "loaded") and barFrame.loaded:
         return  # Already built
@@ -58,7 +57,7 @@ def load_dashboardMenu(
         compound="left",
         command=toggle_callback,
         fg_color="#00c2cb",
-        text_color="#000000"
+        text_color="#FFFFFF"
     )
     mHome.pack(side="top", pady=(25, 0))
 
@@ -69,7 +68,7 @@ def load_dashboardMenu(
         compound="left",
         command=lambda: gotoProfile(mainFrame, headerFrame),
         fg_color="#00c2cb",
-        text_color="#000000"
+        text_color="#FFFFFF"
     )
     pGoTo_Profile.pack(side="top", padx=25, pady=(25, 0))
 
@@ -80,7 +79,7 @@ def load_dashboardMenu(
         compound="left",
         command=lambda: gotoMyTickets(mainFrame, headerFrame),
         fg_color="#00c2cb",
-        text_color="#000000"
+        text_color="#FFFFFF"
     )
     pGoTo_MyTickets.pack(side="top", padx=25, pady=(25, 0))
 
@@ -91,7 +90,7 @@ def load_dashboardMenu(
         compound="left",
         command=lambda: gotoEmployeeManagement(mainFrame, headerFrame),
         fg_color="#00c2cb",
-        text_color="#000000"
+        text_color="#FFFFFF"
     )
     user_EmpType = get_userEmpType()
     if user_EmpType == 1 :

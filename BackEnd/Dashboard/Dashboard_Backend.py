@@ -14,19 +14,44 @@ from BackEnd.SQLiteQueries.DashboardQueries import (
     get_topClosers
 )
 
-def get_backIcon():
+def get_agentIcon():
+    # Get the absolute path to the icon
     current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "arrow back.png")
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "agent logo.png")
+    # Load image and wrap it in CTkImage
 
-    backIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
-    return backIcon
+    agentIcon = ctk.CTkImage(Image.open(icon_path), size=(45, 45))
+    return agentIcon
 
-def get_forwardIcon():
+def get_menuIcon():
+    # Get the absolute path to the icon
     current_dir = os.path.dirname(__file__)
-    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "arrow forward.png")
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "menu.png")
+    # Load image and wrap it in CTkImage
 
-    backIcon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
-    return backIcon
+    icon = ctk.CTkImage(Image.open(icon_path), size=(20, 20))
+    return icon
+
+def get_pendingIcon():
+    current_dir = os.path.dirname(__file__)
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "pending ticket.png")
+
+    pendingTicketIcon = ctk.CTkImage(Image.open(icon_path), size=(30, 30))
+    return pendingTicketIcon
+
+def get_openTicketIcon():
+    current_dir = os.path.dirname(__file__)
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "open ticket.png")
+
+    openTicketIcon = ctk.CTkImage(Image.open(icon_path), size=(30, 30))
+    return openTicketIcon
+
+def get_closedTicketIcon():
+    current_dir = os.path.dirname(__file__)
+    icon_path = os.path.join(current_dir, "..", "..", "Assets", "Icons", "closed ticket.png")
+
+    closedTicketIcon = ctk.CTkImage(Image.open(icon_path), size=(30, 30))
+    return closedTicketIcon
 
 # --------------------------------------------------------- #
 # backend for menubar | Dashboard_Interface.py
@@ -95,9 +120,9 @@ def show_menu(
         )
         welcomeTextLabel2.pack(side="left")
 
-        tempPendingTicketsIcon = get_backIcon()
-        tempOpenTicketsIcon = get_backIcon()
-        tempClosedTicketsIcon = get_forwardIcon()
+        pendingTicketsIcon = get_pendingIcon()
+        openTicketsIcon = get_openTicketIcon()
+        closedTicketsIcon = get_closedTicketIcon()
 
         # Container frame for ticket stats
         row2 = ctk.CTkFrame(
@@ -112,8 +137,9 @@ def show_menu(
 
         pendingTickets = ctk.CTkLabel(
             row2,
-            text=f"Pending Tickets : {pendingTickets_Count}",
-            image=tempPendingTicketsIcon,
+            text=f"  Pending Tickets : {pendingTickets_Count}",
+            image=pendingTicketsIcon,
+            font=("Arial", 15),
             compound="left",
             text_color="#000000"
         )
@@ -121,8 +147,9 @@ def show_menu(
 
         openTickets = ctk.CTkLabel(
             row2,
-            text=f"Open Tickets : {openTickets_Count}",
-            image=tempOpenTicketsIcon,
+            text=f" Open Tickets : {openTickets_Count}",
+            image=openTicketsIcon,
+            font=("Arial", 15),
             compound="left",
             text_color="#000000"
         )
@@ -130,8 +157,9 @@ def show_menu(
 
         closedTickets = ctk.CTkLabel(
             row2,
-            text=f"Closed Tickets : {closedTickets_Count}",
-            image=tempClosedTicketsIcon,
+            text=f" Closed Tickets : {closedTickets_Count}",
+            image=closedTicketsIcon,
+            font=("Arial", 15),
             compound="left",
             text_color="#000000"
         )
@@ -143,12 +171,14 @@ def show_menu(
         )
         row3.pack(side="top", padx=25, pady=10)
 
+        agentIcon = get_agentIcon()
         closedTickets_Count = get_topClosers()
 
         mostTicketsClosed = ctk.CTkLabel(
             row3,
             text=f"Employee with most tickets handled and closed : {closedTickets_Count}",
-            image=tempClosedTicketsIcon,
+            font=("Arial", 18),
+            image=agentIcon,
             compound="left",
             text_color="#000000"
         )

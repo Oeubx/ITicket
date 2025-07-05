@@ -13,10 +13,10 @@ def get_iticketIcon(): #no refresh icon yet
 
     # Load and resize image
     original_image = Image.open(icon_path)
-    resized_image = original_image.resize((150, 150))  # ← was 120x120, increased by 25%
+    resized_image = original_image.resize((120, 120))
 
     # Return CTkImage object
-    iticketIcon = ctk.CTkImage(light_image=resized_image, dark_image=resized_image, size=(150, 150))  # ← updated size
+    iticketIcon = ctk.CTkImage(light_image=resized_image, dark_image=resized_image, size=(120, 120))
 
     return iticketIcon
 

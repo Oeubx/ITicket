@@ -80,7 +80,7 @@ def load_ticketsInterface(frame):
         leftFrame,
         text = "Submit a Ticket",
         fg_color="#00c2cb",
-        text_color="#000000",
+        text_color="#FFFFFF",
         command = lambda: show_tcf()
     )
     createTicketBtn.pack(side="bottom", anchor="e", padx=50, pady=25)
